@@ -1,3 +1,4 @@
+require 'active_support/core_ext/hash/conversions'
 require 'minitest/autorun'
 require 'wx_pay'
 require 'fakeweb'

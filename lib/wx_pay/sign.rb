@@ -11,8 +11,8 @@ module WxPay
     end
 
     def self.verify?(params)
-      params = Utils.stringify_keys(params)
-      sign = params.delete('sign')
+      params = params.dup
+      sign = params.delete('sign') || params.delete(:sign)
 
       generate(params) == sign
     end

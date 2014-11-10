@@ -1,7 +1,6 @@
-require 'wx_pay/utils'
+require 'wx_pay/result'
 require 'wx_pay/sign'
 require 'wx_pay/service'
-require 'wx_pay/notify'
 
 module WxPay
   class<< self

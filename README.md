@@ -30,14 +30,47 @@ $ bundle
 ### Config
 
 ```ruby
+# required
 WxPay.appid = 'YOUR_APPID'
 WxPay.key = 'YOUR_KEY'
 WxPay.mch_id = 'YOUR_MCH_ID'
+
+# optional
+WxPay.extra_rest_client_options = {timeout: 2, open_timeout: 3}
 ```
 
 ### APIs
 
-**PLACEHOLDER**
+**Check official document for detailed request params and return fields**
+
+#### unifiedorder
+ 
+```ruby
+# required fields 
+params = {
+body: '测试商品',
+out_trade_no: 'test003',
+total_fee: 1,
+spbill_create_ip: '127.0.0.1',
+notify_url: 'http://making.dev',
+trade_type: 'JSAPI'
+}
+
+# Return a WxPay::Result instance(subclass of Hash) contains parsed result
+r = WxPay::Service.invoke_unifiedorder params
+# => {"return_code"=>"SUCCESS",
+#     "return_msg"=>"OK",
+#     "appid"=>"YOUR APPID",
+#     "mch_id"=>"YOUR MCH_ID",
+#     "nonce_str"=>"8RN7YfTZ3OUgWX5e",
+#     "sign"=>"623AE90C9679729DDD7407DC7A1151B2",
+#     "result_code"=>"SUCCESS",
+#     "prepay_id"=>"wx2014111104255143b7605afb0314593866",
+#     "trade_type"=>"JSAPI"}
+
+# Return true if both return_code and result_code equal SUCCESS
+r.success? # => true
+```
 
 ## Contributing
 

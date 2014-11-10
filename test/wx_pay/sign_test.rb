@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class WxPay::SignTest < MiniTest::Unit::TestCase
+class WxPay::SignTest < MiniTest::Test
   def setup
     @params = {
       appid: 'wxd930ea5d5a258f4f',
