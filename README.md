@@ -31,8 +31,6 @@ $ bundle
 
 Create `config/initializers/wx_pay.rb` and put following configurations into it.
 
-Note: You should create your APIKEY first if you haven't(Link to [微信商户平台](https://pay.weixin.qq.com/index.php/home/login) ), and pay attention that the length of the KEY should be 32.
-
 ```ruby
 # required
 WxPay.appid = 'YOUR_APPID'
@@ -42,6 +40,8 @@ WxPay.mch_id = 'YOUR_MCH_ID'
 # optional - configurations for RestClient timeout, etc.
 WxPay.extra_rest_client_options = {timeout: 2, open_timeout: 3}
 ```
+
+Note: You should create your APIKEY (Link to [微信商户平台](https://pay.weixin.qq.com/index.php/home/login)) first if you haven't, and pay attention that **the length of the APIKEY should be 32**.
 
 ### APIs
 
@@ -63,7 +63,7 @@ params = {
 }
 ```
 
-Create an payment by executing `WxPay::Service.invoke_unifiedorder params` and it would return a WxPay::Result instance(subclass of Hash) contains parsed result.
+`WxPay::Service.invoke_unifiedorder params` will create an payment request and return a WxPay::Result instance(subclass of Hash) contains parsed result.
 
 If your trade type is "JSAPI", the result would be like this.
 
@@ -80,6 +80,7 @@ r = WxPay::Service.invoke_unifiedorder params
 #      "prepay_id"=>"wx2014111104255143b7605afb0314593866",
 #      "trade_type"=>"JSAPI"
 #    }
+```
 
 If your trade type is "NATIVE", the result would be like this.
 
@@ -104,13 +105,32 @@ r.success? # => true
 
 #### Notify Process
 
-Pending.
+A simple example of processing notify.
+
+```ruby
+# config/routes.rb
+post "notify" => "orders#notify"`
+
+# app/controllers/orders_controller.rb
+
+def notify
+  result = Hash.from_xml(request.body.read)["xml"]
+
+  if WxPay::Sign.verify?(result)
+
+    # find your order and process the post-paid logic.
+
+    render :xml => {return_code: "SUCCESS"}.to_xml(:root => 'xml')
+  else
+    render :xml => {return_code: "SUCCESS", return_msg: "签名失败"}.to_xml(:root => 'xml')
+  end
+end
 
 ### Integretion with QRCode(二维码)
 
 Wechat payment integrating with QRCode is a recommended process flow which will bring users comfortable experience. It is recommended to generate QRCode using `rqrcode` and `rqrcode_png`.
 
-Example Code (please make sure that `public/uploads/qrcode` was created):
+**Example Code** (please make sure that `public/uploads/qrcode` was created):
 
 ```ruby
 r = WxPay::Service.invoke_unifiedorder params
