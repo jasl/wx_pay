@@ -98,6 +98,7 @@ r = WxPay::Service.invoke_unifiedorder params
 #      "code_url"=>"weixin://"
 #      "trade_type"=>"NATIVE"
 #    }
+```
 
 Return true if both return_code and result_code equal SUCCESS
 
