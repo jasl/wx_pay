@@ -99,7 +99,9 @@ r = WxPay::Service.invoke_unifiedorder params
 #      "trade_type"=>"NATIVE"
 #    }
 
-# Return true if both return_code and result_code equal SUCCESS
+Return true if both return_code and result_code equal SUCCESS
+
+```ruby
 r.success? # => true
 ```
 
@@ -109,7 +111,7 @@ A simple example of processing notify.
 
 ```ruby
 # config/routes.rb
-post "notify" => "orders#notify"`
+post "notify" => "orders#notify"
 
 # app/controllers/orders_controller.rb
 
@@ -125,6 +127,7 @@ def notify
     render :xml => {return_code: "SUCCESS", return_msg: "签名失败"}.to_xml(:root => 'xml')
   end
 end
+```
 
 ### Integretion with QRCode(二维码)
 
