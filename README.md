@@ -100,7 +100,7 @@ r = WxPay::Service.invoke_unifiedorder params
 #    }
 ```
 
-Return true if both return_code and result_code equal SUCCESS
+Return true if both `return_code` and `result_code` equal `SUCCESS`
 
 ```ruby
 r.success? # => true
@@ -123,9 +123,9 @@ def notify
 
     # find your order and process the post-paid logic.
 
-    render :xml => {return_code: "SUCCESS"}.to_xml(:root => 'xml')
+    render :xml => {return_code: "SUCCESS"}.to_xml(root: 'xml', dasherize: false)
   else
-    render :xml => {return_code: "SUCCESS", return_msg: "签名失败"}.to_xml(:root => 'xml')
+    render :xml => {return_code: "SUCCESS", return_msg: "签名失败"}.to_xml(root: 'xml', dasherize: false)
   end
 end
 ```
