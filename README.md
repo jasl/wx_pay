@@ -59,7 +59,7 @@ params = {
   total_fee: 1,
   spbill_create_ip: '127.0.0.1',
   notify_url: 'http://making.dev/notify',
-  trade_type: 'JSAPI' # could be "JSAPI" or "NATIVE",
+  trade_type: 'JSAPI', # could be "JSAPI" or "NATIVE",
   openid: 'OPENID' # required when trade_type is `JSAPI`
 }
 ```
