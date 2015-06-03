@@ -30,10 +30,10 @@ module WxPay
           timestamp: Time.now.to_i.to_s,
           prepayid: r["prepay_id"]
         }
-      r["sign"] = Sign.generate(sign_again_params)
+        r["sign"] = WxPay::Sign.generate(sign_again_params)
 
       end
-      
+
       yield r if block_given?
 
       r
