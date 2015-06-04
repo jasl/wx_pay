@@ -10,33 +10,32 @@ module WxPay
       params = {
         appid: WxPay.appid,
         mch_id: WxPay.mch_id,
-        nonce_str: SecureRandom.uuid.tr('-', ''),
+        nonce_str: SecureRandom.uuid.tr('-', '')
       }.merge(params)
 
       check_required_options(params, INVOKE_UNIFIEDORDER_REQUIRED_FIELDS)
 
       r = invoke_remote("#{GATEWAY_URL}/unifiedorder", make_payload(params))
 
-      # when trade_type is app, signing again is needed, the sigin params are below 
-      # appid，partnerid，prepayid，noncestr，timestamp，package。
-      # notice: package is "Sign=WXPay", noncestr is the same as the params[:nonce_str]
-      # prepayid is the r["prepay_id"]
-      if params[:trade_type] == 'APP' && r["return_code"] == "SUCCESS" && r["result_code"] == "SUCCESS"
-        sign_again_params = {
-          appid: params[:appid],
-          noncestr: params[:nonce_str],
-          package: 'Sign=WXPay',
-          partnerid: params[:mch_id],
-          timestamp: Time.now.to_i.to_s,
-          prepayid: r["prepay_id"]
-        }
-        r["sign"] = WxPay::Sign.generate(sign_again_params)
-
-      end
-
       yield r if block_given?
 
       r
+    end
+
+    GENERATE_APP_PAY_REQ_REQUIRED_FIELDS = %i(prepayid noncestr)
+    def self.generate_app_pay_req(params)
+      params = {
+        appid: WxPay.appid,
+        partnerid: WxPay.mch_id,
+        package: 'Sign=WXPay',
+        timestamp: Time.now.to_i.to_s
+      }.merge(params)
+
+      check_required_options(params, GENERATE_APP_PAY_REQ_REQUIRED_FIELDS)
+
+      params[:sign] = WxPay::Sign.generate(params)
+
+      params
     end
 
     private

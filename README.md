@@ -49,7 +49,7 @@ Note: You should create your APIKEY (Link to [微信商户平台](https://pay.we
 
 #### unifiedorder
 
-WxPay supports both JSAPI and NATIVE.
+WxPay supports both JSAPI, NATIVE and APP.
 
 ```ruby
 # required fields
@@ -59,7 +59,7 @@ params = {
   total_fee: 1,
   spbill_create_ip: '127.0.0.1',
   notify_url: 'http://making.dev/notify',
-  trade_type: 'JSAPI', # could be "JSAPI" or "NATIVE",
+  trade_type: 'JSAPI', # could be "JSAPI", "NATIVE" or "APP",
   openid: 'OPENID' # required when trade_type is `JSAPI`
 }
 ```
@@ -105,6 +105,28 @@ Return true if both `return_code` and `result_code` equal `SUCCESS`
 
 ```ruby
 r.success? # => true
+```
+
+#### pay request for app
+
+```ruby
+# required fields
+params = {
+  prepayid: '1101000000140415649af9fc314aa427', # fetch by call invoke_unifiedorder with `trade_type` is `APP`
+  noncestr: '1101000000140429eb40476f8896f4c9' # must same as given to invoke_unifiedorder
+}
+
+# call generate_app_pay_req
+r = WxPay::Service::generate_app_pay_req params
+# => {
+#      appid: 'wxd930ea5d5a258f4f',
+#      partnerid: '1900000109',
+#      prepayid: '1101000000140415649af9fc314aa427',
+#      package: 'Sign=WXPay',
+#      noncestr: '1101000000140429eb40476f8896f4c9',
+#      timestamp: '1398746574',
+#      sign: '7FFECB600D7157C5AA49810D2D8F28BC2811827B'
+#    }
 ```
 
 #### Notify Process
