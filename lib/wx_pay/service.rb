@@ -38,32 +38,33 @@ module WxPay
       params
     end
 
-    private
-
-    def self.check_required_options(options, names)
-      names.each do |name|
-        warn("WxPay Warn: missing required option: #{name}") unless options.has_key?(name)
+    class << self
+      private
+      def check_required_options(options, names)
+        names.each do |name|
+          warn("WxPay Warn: missing required option: #{name}") unless options.has_key?(name)
+        end
       end
-    end
 
-    def self.make_payload(params)
-      "<xml>#{params.map { |k, v| "<#{k}>#{v}</#{k}>" }.join}<sign>#{WxPay::Sign.generate(params)}</sign></xml>"
-    end
+      def make_payload(params)
+        "<xml>#{params.map { |k, v| "<#{k}>#{v}</#{k}>" }.join}<sign>#{WxPay::Sign.generate(params)}</sign></xml>"
+      end
 
-    def self.invoke_remote(url, payload)
-      r = RestClient::Request.execute(
-        {
-          method: :post,
-          url: url,
-          payload: payload,
-          headers: { content_type: 'application/xml' }
-        }.merge(WxPay.extra_rest_client_options)
-      )
+      def invoke_remote(url, payload)
+        r = RestClient::Request.execute(
+          {
+            method: :post,
+            url: url,
+            payload: payload,
+            headers: { content_type: 'application/xml' }
+          }.merge(WxPay.extra_rest_client_options)
+        )
 
-      if r
-        WxPay::Result.new Hash.from_xml(r)
-      else
-        nil
+        if r
+          WxPay::Result.new Hash.from_xml(r)
+        else
+          nil
+        end
       end
     end
   end
