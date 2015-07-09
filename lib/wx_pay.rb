@@ -4,7 +4,7 @@ require 'wx_pay/service'
 
 module WxPay
   class<< self
-    attr_accessor :appid, :mch_id, :key
+    attr_accessor :appid, :mch_id, :key, :apiclient_cert_file
 
     def extra_rest_client_options=(options)
       @rest_client_options = options

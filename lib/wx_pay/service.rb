@@ -3,7 +3,7 @@ require 'active_support/core_ext/hash/conversions'
 
 module WxPay
   module Service
-    GATEWAY_URL = 'https://api.mch.weixin.qq.com/pay'
+    GATEWAY_URL = 'https://api.mch.weixin.qq.com'
 
     INVOKE_UNIFIEDORDER_REQUIRED_FIELDS = %i(body out_trade_no total_fee spbill_create_ip notify_url trade_type)
     def self.invoke_unifiedorder(params)
@@ -15,7 +15,7 @@ module WxPay
 
       check_required_options(params, INVOKE_UNIFIEDORDER_REQUIRED_FIELDS)
 
-      r = invoke_remote("#{GATEWAY_URL}/unifiedorder", make_payload(params))
+      r = invoke_remote("#{GATEWAY_URL}/pay/unifiedorder", make_payload(params))
 
       yield r if block_given?
 
@@ -37,6 +37,38 @@ module WxPay
 
       params
     end
+
+    INVOKE_REFUND_REQUIRED_FIELDS = %i(transaction_id out_trade_no out_refund_no total_fee refund_fee)
+    def self.invoke_refund(params)
+      params = {
+        appid: WxPay.appid,
+        mch_id: WxPay.mch_id,
+        nonce_str: SecureRandom.uuid.tr('-', ''),
+        op_user_id: WxPay.mch_id
+      }.merge(params)
+      
+      check_required_options(params, INVOKE_REFUND_REQUIRED_FIELDS)
+
+      # 微信退款需要双向证书
+      # https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_4
+      # https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
+
+      p12_file = File.read WxPay.apiclient_cert_file
+      cert = OpenSSL::PKCS12.new(p12_file, WxPay.mch_id)
+      
+      WxPay.extra_rest_client_options = {
+        ssl_client_cert: cert.certificate,
+        ssl_client_key: cert.key,
+        verify_ssl: OpenSSL::SSL::VERIFY_NONE
+      }
+
+      r = invoke_remote "#{GATEWAY_URL}/secapi/pay/refund", make_payload(params)
+
+      yield(r) if block_given?
+
+      r
+    end
+
 
     private
 
