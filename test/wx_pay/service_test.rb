@@ -1,10 +1,6 @@
+
 class ServiceTest < MiniTest::Test
   def setup
-    WxPay.appid = 'xxxxxxxxxxxxxx'
-    WxPay.key = 'xxxxxxxxxxxxxxx'
-    WxPay.mch_id = 'xxxxxxxxxxxxxx'
-    WxPay.apiclient_cert_file = '/Users/jimmy/Workspace/shopshow-ultron/public/apiclient_cert.p12'
-
     @params = {
       transaction_id: '1217752501201407033233368018',
       op_user_id: '10000100',
@@ -13,9 +9,15 @@ class ServiceTest < MiniTest::Test
       refund_fee: 1,
       total_fee: 1
     }
+
+    @apiclient_cert = Minitest::Mock.new
+    @apiclient_cert.expect(:certificate, 'certificate')
+    @apiclient_cert.expect(:key, 'key')    
   end
 
   def test_invoke_refund
+
+
     response_body = <<-EOF
      <xml>
        <return_code><![CDATA[SUCCESS]]></return_code>
@@ -41,7 +43,9 @@ class ServiceTest < MiniTest::Test
       body: response_body
     )
 
-    r = WxPay::Service.invoke_refund(@params)
-    assert_equal r.success?, true 
+    WxPay.stub :apiclient_cert, @apiclient_cert do
+      r = WxPay::Service.invoke_refund(@params)
+      assert_equal r.success?, true 
+    end
   end
 end

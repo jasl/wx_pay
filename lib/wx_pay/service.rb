@@ -52,13 +52,10 @@ module WxPay
       # 微信退款需要双向证书
       # https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_4
       # https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
-
-      p12_file = File.read WxPay.apiclient_cert_file
-      cert = OpenSSL::PKCS12.new(p12_file, WxPay.mch_id)
       
       WxPay.extra_rest_client_options = {
-        ssl_client_cert: cert.certificate,
-        ssl_client_key: cert.key,
+        ssl_client_cert: WxPay.apiclient_cert.certificate,
+        ssl_client_key: WxPay.apiclient_cert.key,
         verify_ssl: OpenSSL::SSL::VERIFY_NONE
       }
 
