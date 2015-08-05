@@ -1,5 +1,7 @@
 
 class ServiceTest < MiniTest::Test
+
+  # TODO why put the params of refun in setup method
   def setup
     @params = {
       transaction_id: '1217752501201407033233368018',
@@ -12,7 +14,7 @@ class ServiceTest < MiniTest::Test
 
     @apiclient_cert = Minitest::Mock.new
     @apiclient_cert.expect(:certificate, 'certificate')
-    @apiclient_cert.expect(:key, 'key')    
+    @apiclient_cert.expect(:key, 'key')
   end
 
   def test_invoke_refund
@@ -34,7 +36,7 @@ class ServiceTest < MiniTest::Test
        <refund_channel><![CDATA[]]></refund_channel>
        <refund_fee>1</refund_fee>
        <coupon_refund_fee>0</coupon_refund_fee>
-     </xml>    
+     </xml>
     EOF
 
     FakeWeb.register_uri(
@@ -45,7 +47,24 @@ class ServiceTest < MiniTest::Test
 
     WxPay.stub :apiclient_cert, @apiclient_cert do
       r = WxPay::Service.invoke_refund(@params)
-      assert_equal r.success?, true 
+      assert_equal r.success?, true
     end
+  end
+
+  def test_accept_multiple_app_id_when_invoke
+    params = {
+      body: '测试商品',
+      out_trade_no: 'test003',
+      total_fee: 1,
+      spbill_create_ip: '127.0.0.1',
+      notify_url: 'http://making.dev/notify',
+      trade_type: 'JSAPI',
+      openid: 'OPENID',
+      app_id: 'app_id',
+      mch_id: 'mch_id',
+      key: 'key'
+    }
+    xml_str = '<xml><body>测试商品</body><out_trade_no>test003</out_trade_no><total_fee>1</total_fee><spbill_create_ip>127.0.0.1</spbill_create_ip><notify_url>http://making.dev/notify</notify_url><trade_type>JSAPI</trade_type><openid>OPENID</openid><app_id>app_id</app_id><mch_id>mch_id</mch_id><sign>172A2D487A37D13FDE32B874BA823DD6</sign></xml>'
+    assert_equal xml_str, WxPay::Service.send(:make_payload, params)
   end
 end
