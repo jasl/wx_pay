@@ -28,4 +28,10 @@ class WxPay::SignTest < MiniTest::Test
   def test_verify_sign_when_fails
     assert !WxPay::Sign.verify?(@params.merge(:danger => 'danger', :sign => @sign))
   end
+
+  def test_accept_pars_key_to_generate_sign
+    @params.merge!(key: "key")
+
+    assert_equal "1454C32E885B8D9E4A05E976D1C45B88", WxPay::Sign.generate(@params)
+  end
 end

@@ -46,13 +46,13 @@ module WxPay
         nonce_str: SecureRandom.uuid.tr('-', ''),
         op_user_id: WxPay.mch_id
       }.merge(params)
-      
+
       check_required_options(params, INVOKE_REFUND_REQUIRED_FIELDS)
 
       # 微信退款需要双向证书
       # https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_4
       # https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
-      
+
       WxPay.extra_rest_client_options = {
         ssl_client_cert: WxPay.apiclient_cert.certificate,
         ssl_client_key: WxPay.apiclient_cert.key,
@@ -76,7 +76,9 @@ module WxPay
     end
 
     def self.make_payload(params)
-      "<xml>#{params.map { |k, v| "<#{k}>#{v}</#{k}>" }.join}<sign>#{WxPay::Sign.generate(params)}</sign></xml>"
+      sign = WxPay::Sign.generate(params)
+      params.delete(:key) if params[:key]
+      "<xml>#{params.map { |k, v| "<#{k}>#{v}</#{k}>" }.join}<sign>#{sign}</sign></xml>"
     end
 
     def self.invoke_remote(url, payload)
