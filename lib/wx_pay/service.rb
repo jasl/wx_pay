@@ -38,7 +38,7 @@ module WxPay
       params
     end
 
-    INVOKE_REFUND_REQUIRED_FIELDS = %i(transaction_id out_trade_no out_refund_no total_fee refund_fee)
+    INVOKE_REFUND_REQUIRED_FIELDS = %i(out_refund_no total_fee refund_fee)
     def self.invoke_refund(params)
       params = {
         appid: WxPay.appid,
