@@ -49,19 +49,26 @@ module WxPay
 
       check_required_options(params, INVOKE_REFUND_REQUIRED_FIELDS)
 
-      # 微信退款需要双向证书
-      # https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_4
-      # https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
-
-      WxPay.extra_rest_client_options = {
-        ssl_client_cert: WxPay.apiclient_cert.certificate,
-        ssl_client_key: WxPay.apiclient_cert.key,
-        verify_ssl: OpenSSL::SSL::VERIFY_NONE
-      }
-
-      r = invoke_remote "#{GATEWAY_URL}/secapi/pay/refund", make_payload(params)
+      r = invoke_remote_with_cert("#{GATEWAY_URL}/secapi/pay/refund", make_payload(params))
 
       yield(r) if block_given?
+
+      r
+    end
+
+    INVOKE_TRANSFER_REQUIRED_FIELDS = %i(partner_trade_no openid check_name amount desc spbill_create_ip)
+    def self.invoke_transfer params
+      params = {
+        mch_appid: WxPay.appid,
+        mchid: WxPay.mch_id,
+        nonce_str: SecureRandom.uuid.tr('-', '')
+      }.merge(params)
+
+      check_required_options(params, INVOKE_TRANSFER_REQUIRED_FIELDS)
+
+      r = invoke_remote_with_cert("#{GATEWAY_URL}/mmpaymkttransfers/promotion/transfers", make_payload(params))
+
+      yield r if block_given?
 
       r
     end
@@ -81,14 +88,26 @@ module WxPay
       "<xml>#{params.map { |k, v| "<#{k}>#{v}</#{k}>" }.join}<sign>#{sign}</sign></xml>"
     end
 
-    def self.invoke_remote(url, payload)
+    def self.invoke_remote_with_cert(url, payload)
+      # 微信退款、企业付款等需要双向证书
+      # https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_4
+      # https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
+
+      invoke_remote(url, payload, {
+        ssl_client_cert: WxPay.apiclient_cert.certificate,
+        ssl_client_key: WxPay.apiclient_cert.key,
+        verify_ssl: OpenSSL::SSL::VERIFY_NONE
+      })
+    end
+
+    def self.invoke_remote(url, payload, extra_rest_client_options = {})
       r = RestClient::Request.execute(
         {
           method: :post,
           url: url,
           payload: payload,
           headers: { content_type: 'application/xml' }
-        }.merge(WxPay.extra_rest_client_options)
+        }.merge(WxPay.extra_rest_client_options).merge(extra_rest_client_options)
       )
 
       if r
