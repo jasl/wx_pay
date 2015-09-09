@@ -5,7 +5,7 @@ module WxPay
   module Service
     GATEWAY_URL = 'https://api.mch.weixin.qq.com'
 
-    INVOKE_UNIFIEDORDER_REQUIRED_FIELDS = %i(body out_trade_no total_fee spbill_create_ip notify_url trade_type)
+    INVOKE_UNIFIEDORDER_REQUIRED_FIELDS = [:body, :out_trade_no, :total_fee, :spbill_create_ip, :notify_url, :trade_type]
     def self.invoke_unifiedorder(params)
       params = {
         appid: WxPay.appid,
@@ -22,7 +22,7 @@ module WxPay
       r
     end
 
-    GENERATE_APP_PAY_REQ_REQUIRED_FIELDS = %i(prepayid noncestr)
+    GENERATE_APP_PAY_REQ_REQUIRED_FIELDS = [:prepayid, :noncestr]
     def self.generate_app_pay_req(params)
       params = {
         appid: WxPay.appid,
@@ -38,7 +38,7 @@ module WxPay
       params
     end
 
-    INVOKE_REFUND_REQUIRED_FIELDS = %i(transaction_id out_trade_no out_refund_no total_fee refund_fee)
+    INVOKE_REFUND_REQUIRED_FIELDS = [:transaction_id, :out_trade_no, :out_refund_no, :total_fee, :refund_fee]
     def self.invoke_refund(params)
       params = {
         appid: WxPay.appid,
