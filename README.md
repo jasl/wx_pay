@@ -1,4 +1,4 @@
-# WxPay
+# WeixinPay
 
 A simple Wechat pay ruby gem, without unnecessary magic or wrapper.
 copied from [WxPay](https://github.com/jasl/wx_pay), but support ruby 1.9.3 .
