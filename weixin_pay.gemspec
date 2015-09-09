@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "wx_pay/version"
 
 Gem::Specification.new do |s|
-  s.name          = "wx_pay"
+  s.name          = "weixin_pay"
   s.version       = WxPay::VERSION
   s.authors       = ["Jasl"]
   s.email         = ["jasl9187@hotmail.com"]
