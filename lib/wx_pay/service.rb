@@ -5,39 +5,6 @@ module WxPay
   module Service
     GATEWAY_URL = 'https://api.mch.weixin.qq.com'
 
-    # def self.get_oauth_url_code(self, redirectUrl):
-    #     """生成可以获得code的url"""
-    #     urlObj = {}
-    #     urlObj["appid"] = WxPay.appid
-    #     urlObj["redirect_uri"] = redirectUrl
-    #     urlObj["response_type"] = "code"
-    #     urlObj["scope"] = "snsapi_base"
-    #     urlObj["state"] = "STATE#wechat_redirect"
-    #     bizString = self.formatBizQueryParaMap(urlObj, False)
-    #     return "https://open.weixin.qq.com/connect/oauth2/authorize?"+bizString
-
-    # def createOauthUrlForOpenid(self):
-    #     """生成可以获得openid的url"""
-    #     urlObj = {}
-    #     urlObj["appid"] = WxPay.appid
-    #     urlObj["secret"] = WxPay.APPSECRET
-    #     urlObj["code"] = self.code
-    #     urlObj["grant_type"] = "authorization_code"
-    #     bizString = self.formatBizQueryParaMap(urlObj, False)
-    #     return "https://api.weixin.qq.com/sns/oauth2/access_token?"+bizString
-
-    # def self.invoice_getopenid(params)
-    #   """通过curl向微信提交code，以获取openid"""
-    #   code = "12313132"
-    #   params = {
-    #     appid: WxPay.appid,
-    #     secret: WxPay.appsecret,
-    #     code: code,
-    #     grant_type: "authorization_code"
-    #   }
-    #   r = invoke_remote("https://api.weixin.qq.com/sns/oauth2/access_token?", make_payload(params))
-    #   openid = r['openid']
-    # end
     def self.authenticate_openid(params)
       # 当session中没有openid时，则为非登录状态
       code = params[:code]
