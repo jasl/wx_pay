@@ -5,6 +5,58 @@ module WxPay
   module Service
     GATEWAY_URL = 'https://api.mch.weixin.qq.com'
 
+    # def self.get_oauth_url_code(self, redirectUrl):
+    #     """生成可以获得code的url"""
+    #     urlObj = {}
+    #     urlObj["appid"] = WxPay.appid
+    #     urlObj["redirect_uri"] = redirectUrl
+    #     urlObj["response_type"] = "code"
+    #     urlObj["scope"] = "snsapi_base"
+    #     urlObj["state"] = "STATE#wechat_redirect"
+    #     bizString = self.formatBizQueryParaMap(urlObj, False)
+    #     return "https://open.weixin.qq.com/connect/oauth2/authorize?"+bizString
+
+    # def createOauthUrlForOpenid(self):
+    #     """生成可以获得openid的url"""
+    #     urlObj = {}
+    #     urlObj["appid"] = WxPay.appid
+    #     urlObj["secret"] = WxPay.APPSECRET
+    #     urlObj["code"] = self.code
+    #     urlObj["grant_type"] = "authorization_code"
+    #     bizString = self.formatBizQueryParaMap(urlObj, False)
+    #     return "https://api.weixin.qq.com/sns/oauth2/access_token?"+bizString
+
+    # def self.invoice_getopenid(params)
+    #   """通过curl向微信提交code，以获取openid"""
+    #   code = "12313132"
+    #   params = {
+    #     appid: WxPay.appid,
+    #     secret: WxPay.appsecret,
+    #     code: code,
+    #     grant_type: "authorization_code"
+    #   }
+    #   r = invoke_remote("https://api.weixin.qq.com/sns/oauth2/access_token?", make_payload(params))
+    #   openid = r['openid']
+    # end
+    def self.authenticate_openid(params)
+      # 当session中没有openid时，则为非登录状态
+      code = params[:code]
+
+      # 如果code参数为空，则为认证第一步，重定向到微信认证
+      if code.nil?
+        redirect_to "https://open.weixin.qq.com/connect/oauth2/authorize?appid=#{WxPay.appid}&redirect_uri=#{request.url}&response_type=code&scope=snsapi_base&state=#{request.url}#wechat_redirect"
+      end
+
+      #如果code参数不为空，则认证到第二步，通过code获取openid，并保存到session中
+      begin
+        url    = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=#{WxPay.appid}&secret=#{WxPay.appsecret}&code=#{code}&grant_type=authorization_code"
+        weixin_openid = JSON.parse(URI.parse(url).read)["openid"]
+      rescue Exception => e
+        puts "Can not get Weixin Open ID"
+      end
+      weixin_openid
+    end
+
     INVOKE_UNIFIEDORDER_REQUIRED_FIELDS = [:body, :out_trade_no, :total_fee, :spbill_create_ip, :notify_url, :trade_type]
     def self.invoke_unifiedorder(params, options = {})
       params = {

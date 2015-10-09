@@ -36,6 +36,7 @@ Create `config/initializers/wx_pay.rb` and put following configurations into it.
 WxPay.appid = 'YOUR_APPID'
 WxPay.key = 'YOUR_KEY'
 WxPay.mch_id = 'YOUR_MCH_ID'
+WxPay.appsecret = 'YOUR_SECREDT'
 WxPay.debug_mode = true # default is `true`
 
 # cert, see https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=4_3
