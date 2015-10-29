@@ -6,8 +6,8 @@ module WxPay
       key = params.delete(:key)
 
       query = params.sort.map do |key, value|
-        "#{key}=#{value}"
-      end.join('&')
+        "#{key}=#{value}" if value != "" && !value.nil?
+      end.compact.join('&')
 
       Digest::MD5.hexdigest("#{query}&key=#{key || WxPay.key}").upcase
     end
