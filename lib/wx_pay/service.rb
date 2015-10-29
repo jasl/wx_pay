@@ -66,6 +66,66 @@ module WxPay
       r
     end
 
+    INVOKE_REVERSE_REQUIRED_FIELDS = %i(out_trade_no)
+    def self.invoke_reverse(params)
+      params = {
+        appid: WxPay.appid,
+        mch_id: WxPay.mch_id,
+        nonce_str: SecureRandom.uuid.tr('-', '')
+      }.merge(params)
+
+      check_required_options(params, INVOKE_REVERSE_REQUIRED_FIELDS)
+
+      # 微信退款需要双向证书
+      # https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_4
+      # https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=4_3
+
+      WxPay.extra_rest_client_options = {
+        ssl_client_cert: WxPay.apiclient_cert.certificate,
+        ssl_client_key: WxPay.apiclient_cert.key,
+        verify_ssl: OpenSSL::SSL::VERIFY_NONE
+      }
+
+      r = invoke_remote "#{GATEWAY_URL}/secapi/pay/reverse", make_payload(params)
+
+      yield(r) if block_given?
+
+      r
+    end
+
+    INVOKE_MICROPAY_REQUIRED_FIELDS = %i(body out_trade_no total_fee spbill_create_ip auth_code)
+    def self.invoke_micropay(params)
+      params = {
+        appid: WxPay.appid,
+        mch_id: WxPay.mch_id,
+        nonce_str: SecureRandom.uuid.tr('-', '')
+      }.merge(params)
+      puts params
+      check_required_options(params, INVOKE_MICROPAY_REQUIRED_FIELDS)
+
+      r = invoke_remote "#{GATEWAY_URL}/pay/micropay", make_payload(params)
+
+      yield(r) if block_given?
+
+      r
+    end
+
+    ORDER_QUERY_REQUIRED_FIELDS = %i(out_trade_no)
+    def self.order_query(params)
+      params = {
+        appid: WxPay.appid,
+        mch_id: WxPay.mch_id,
+        nonce_str: SecureRandom.uuid.tr('-', '')
+      }.merge(params)
+      puts params
+      check_required_options(params, ORDER_QUERY_REQUIRED_FIELDS)
+
+      r = invoke_remote "#{GATEWAY_URL}/pay/orderquery", make_payload(params)
+
+      yield(r) if block_given?
+
+      r
+    end
 
     private
 
