@@ -3,7 +3,7 @@ module WxPay
     SUCCESS_FLAG = 'SUCCESS'.freeze
 
     def self.[] result
-      hash = super
+      hash = self.new
 
       if result['xml'].class == Hash
         result['xml'].each_pair do |k, v|

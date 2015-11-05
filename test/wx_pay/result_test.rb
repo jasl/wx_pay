@@ -16,7 +16,7 @@ class WxPay::ResultTest < MiniTest::Test
     assert_equal r.success?, true
   end
 
-  def test_success_method_with_true
+  def test_nonexistent_key
     r = WxPay::Result[
       Hash.from_xml(
         <<-XML
@@ -31,6 +31,7 @@ class WxPay::ResultTest < MiniTest::Test
 
     assert_equal r['return_code'].nil?, false
     assert_equal r['prepay_id'].nil?, true
+    assert_equal r.keys, ['return_code', 'code_url', 'result_code']
   end
 
   def test_success_method_with_false
