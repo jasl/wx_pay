@@ -1,0 +1,40 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Result	lib/wx_pay/result.rb	/^  class Result < ::Hash$/;"	c	class:WxPay
+Service	lib/wx_pay/service.rb	/^  module Service$/;"	m	class:WxPay
+ServiceTest	test/wx_pay/service_test.rb	/^class ServiceTest < MiniTest::Test$/;"	c
+Sign	lib/wx_pay/sign.rb	/^  module Sign$/;"	m	class:WxPay
+WxPay	lib/wx_pay.rb	/^module WxPay$/;"	m
+WxPay	lib/wx_pay/result.rb	/^module WxPay$/;"	m
+WxPay	lib/wx_pay/service.rb	/^module WxPay$/;"	m
+WxPay	lib/wx_pay/sign.rb	/^module WxPay$/;"	m
+WxPay	lib/wx_pay/version.rb	/^module WxPay$/;"	m
+WxPay	test/wx_pay/result_test.rb	/^class WxPay::ResultTest < MiniTest::Test$/;"	c
+WxPay	test/wx_pay/sign_test.rb	/^class WxPay::SignTest < MiniTest::Test$/;"	c
+apiclient_cert	lib/wx_pay.rb	/^    def apiclient_cert$/;"	f	class:WxPay
+check_required_options	lib/wx_pay/service.rb	/^    def self.check_required_options(options, names)$/;"	F	class:WxPay.Service
+extra_rest_client_options	lib/wx_pay.rb	/^    def extra_rest_client_options$/;"	f	class:WxPay
+extra_rest_client_options=	lib/wx_pay.rb	/^    def extra_rest_client_options=(options)$/;"	f	class:WxPay
+generate	lib/wx_pay/sign.rb	/^    def self.generate(params)$/;"	F	class:WxPay.Sign
+generate_app_pay_req	lib/wx_pay/service.rb	/^    def self.generate_app_pay_req(params)$/;"	F	class:WxPay.Service
+initialize	lib/wx_pay/result.rb	/^    def initialize(result)$/;"	f	class:WxPay.Result
+invoke_refund	lib/wx_pay/service.rb	/^    def self.invoke_refund(params)$/;"	F	class:WxPay.Service
+invoke_remote	lib/wx_pay/service.rb	/^    def self.invoke_remote(url, payload)$/;"	F	class:WxPay.Service
+invoke_unifiedorder	lib/wx_pay/service.rb	/^    def self.invoke_unifiedorder(params)$/;"	F	class:WxPay.Service
+make_payload	lib/wx_pay/service.rb	/^    def self.make_payload(params)$/;"	F	class:WxPay.Service
+setup	test/wx_pay/service_test.rb	/^  def setup$/;"	f	class:ServiceTest
+setup	test/wx_pay/sign_test.rb	/^  def setup$/;"	f	class:WxPay
+success?	lib/wx_pay/result.rb	/^    def success?$/;"	f	class:WxPay.Result
+test_accept_multiple_app_id_when_invoke	test/wx_pay/service_test.rb	/^  def test_accept_multiple_app_id_when_invoke$/;"	f	class:ServiceTest
+test_accept_pars_key_to_generate_sign	test/wx_pay/sign_test.rb	/^  def test_accept_pars_key_to_generate_sign$/;"	f	class:WxPay
+test_generate_sign	test/wx_pay/sign_test.rb	/^  def test_generate_sign$/;"	f	class:WxPay
+test_invoke_refund	test/wx_pay/service_test.rb	/^  def test_invoke_refund$/;"	f	class:ServiceTest
+test_success_method_with_false	test/wx_pay/result_test.rb	/^  def test_success_method_with_false$/;"	f	class:WxPay
+test_success_method_with_true	test/wx_pay/result_test.rb	/^  def test_success_method_with_true$/;"	f	class:WxPay
+test_verify_sign	test/wx_pay/sign_test.rb	/^  def test_verify_sign$/;"	f	class:WxPay
+test_verify_sign_when_fails	test/wx_pay/sign_test.rb	/^  def test_verify_sign_when_fails$/;"	f	class:WxPay
+verify	lib/wx_pay/sign.rb	/^    def self.verify?(params)$/;"	F	class:WxPay.Sign.generate
