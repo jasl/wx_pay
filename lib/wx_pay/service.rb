@@ -59,7 +59,7 @@ module WxPay
         verify_ssl: OpenSSL::SSL::VERIFY_NONE
       }
 
-      r = invoke_remote "#{GATEWAY_URL}/pay/closeorder", make_payload(params)
+      r = invoke_remote "#{GATEWAY_URL}/secapi/pay/refund", make_payload(params)
 
       yield(r) if block_given?
 
@@ -76,7 +76,7 @@ module WxPay
 
       check_required_options(params, CLOSE_ORDER_REQUIRED_FIELDS)
 
-      r = invoke_remote "#{GATEWAY_URL}/secapi/pay/refund", make_payload(params)
+      r = invoke_remote "#{GATEWAY_URL}/pay/closeorder", make_payload(params)
 
       yield(r) if block_given?
 
