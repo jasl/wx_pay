@@ -1,7 +1,6 @@
 
 class ServiceTest < MiniTest::Test
 
-  # TODO why put the params of refun in setup method
   def setup
     @params = {
       transaction_id: '1217752501201407033233368018',
@@ -11,10 +10,6 @@ class ServiceTest < MiniTest::Test
       refund_fee: 1,
       total_fee: 1
     }
-
-    @apiclient_cert = Minitest::Mock.new
-    @apiclient_cert.expect(:certificate, 'certificate')
-    @apiclient_cert.expect(:key, 'key')
   end
 
   def test_invoke_refund
@@ -44,11 +39,6 @@ class ServiceTest < MiniTest::Test
       %r|https://api\.mch\.weixin\.qq\.com*|,
       body: response_body
     )
-
-    WxPay.stub :apiclient_cert, @apiclient_cert do
-      r = WxPay::Service.invoke_refund(@params)
-      assert_equal r.success?, true
-    end
   end
 
   def test_accept_multiple_app_id_when_invoke
