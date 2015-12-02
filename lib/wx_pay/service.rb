@@ -58,7 +58,7 @@ module WxPay
 
       r = invoke_remote("#{GATEWAY_URL}/secapi/pay/refund", make_payload(params), options)
 
-      yield(r) if block_given?
+      yield r if block_given?
 
       r
     end
@@ -104,7 +104,7 @@ module WxPay
 
       r = invoke_remote("#{GATEWAY_URL}/secapi/pay/reverse", make_payload(params), options)
 
-      yield(r) if block_given?
+      yield r if block_given?
 
       r
     end
@@ -127,7 +127,7 @@ module WxPay
 
       r = invoke_remote("#{GATEWAY_URL}/pay/micropay", make_payload(params), options)
 
-      yield(r) if block_given?
+      yield r if block_given?
 
       r
     end
@@ -144,7 +144,7 @@ module WxPay
 
       r = invoke_remote("#{GATEWAY_URL}/pay/orderquery", make_payload(params), options)
 
-      yield(r) if block_given?
+      yield r if block_given?
 
       r
     end
