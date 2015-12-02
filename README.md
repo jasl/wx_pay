@@ -37,6 +37,10 @@ WxPay.appid = 'YOUR_APPID'
 WxPay.key = 'YOUR_KEY'
 WxPay.mch_id = 'YOUR_MCH_ID'
 
+# cert, see https://pay.weixin.qq.com/wiki/doc/api/app.php?chapter=4_3
+# using PCKS12
+WxPay.set_apiclient_by_pkcs12(pkcs12_path_or_string, pass)
+
 # optional - configurations for RestClient timeout, etc.
 WxPay.extra_rest_client_options = {timeout: 2, open_timeout: 3}
 ```
@@ -163,6 +167,20 @@ Wechat payment integrating with QRCode is a recommended process flow which will 
 r = WxPay::Service.invoke_unifiedorder params
 qrcode_png = RQRCode::QRCode.new( r["code_url"], :size => 5, :level => :h ).to_img.resize(200, 200).save("public/uploads/qrcode/#{@order.id.to_s}_#{Time.now.to_i.to_s}.png")
 @qrcode_url = "/uploads/qrcode/#{@order.id.to_s}_#{Time.now.to_i.to_s}.png"
+```
+
+### More
+
+No documents yet, check `lib/wx_pay/service.rb`
+
+## Multi-account support
+
+All functions have third argument `options`,
+you can pass `appid`, `mch_id`, `key`, `apiclient_cert`, `apiclient_key` as a hash.
+
+For example
+```ruby
+WxPay::Service::generate_app_pay_req params, {appid: 'APPID', mch_id: 'MCH_ID', key: 'KEY'}
 ```
 
 ## Contributing
