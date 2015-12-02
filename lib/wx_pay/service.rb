@@ -173,13 +173,15 @@ module WxPay
     end
 
     def self.invoke_remote(url, payload, options = {})
+      options = WxPay.extra_rest_client_options.merge(options)
+
       r = RestClient::Request.execute(
         {
           method: :post,
           url: url,
           payload: payload,
           headers: { content_type: 'application/xml' }
-        }.merge(WxPay.extra_rest_client_options).merge(options)
+        }.merge(options)
       )
 
       if r

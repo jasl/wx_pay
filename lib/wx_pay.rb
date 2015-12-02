@@ -4,7 +4,7 @@ require 'wx_pay/service'
 require 'openssl'
 
 module WxPay
-  @rest_client_options = {}
+  @extra_rest_client_options = {}
 
   class<< self
     attr_accessor :appid, :mch_id, :key, :apiclient_cert, :apiclient_key, :extra_rest_client_options
