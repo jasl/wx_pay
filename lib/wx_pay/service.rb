@@ -177,7 +177,7 @@ module WxPay
         )
 
         if r
-          WxPay::Result[Hash.from_xml(r)]
+          WxPay::Result.new(Hash.from_xml(r))
         else
           nil
         end
