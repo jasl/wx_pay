@@ -2,16 +2,14 @@ module WxPay
   class Result < ::Hash
     SUCCESS_FLAG = 'SUCCESS'.freeze
 
-    def self.[] result
-      hash = self.new
+    def initialize(result)
+      super
 
       if result['xml'].class == Hash
         result['xml'].each_pair do |k, v|
-          hash[k] = v
+          self[k] = v
         end
       end
-
-      hash
     end
 
     def success?
