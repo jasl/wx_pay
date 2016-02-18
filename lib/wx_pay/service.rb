@@ -151,7 +151,7 @@ module WxPay
     
     def self.sendgroupredpack(params, options={})
       params = {
-        appid: options.delete(:appid) || WxPay.appid,
+        wxappid: options.delete(:appid) || WxPay.appid,
         mch_id: options.delete(:mch_id) || WxPay.mch_id,
         nonce_str: SecureRandom.uuid.tr('-', '')
       }.merge(params)
@@ -173,7 +173,7 @@ module WxPay
     
     def self.sendredpack(params, options={})
       params = {
-        appid: options.delete(:appid) || WxPay.appid,
+        wxappid: options.delete(:appid) || WxPay.appid,
         mch_id: options.delete(:mch_id) || WxPay.mch_id,
         nonce_str: SecureRandom.uuid.tr('-', '')
       }.merge(params)
