@@ -38,6 +38,21 @@ module WxPay
       params
     end
 
+    GENERATE_JS_PAY_REQ_REQUIRED_FIELDS = %i(package noncestr)
+    def self.generate_js_pay_req(params, options = {})
+      params = {
+        appid: options.delete(:appid) || WxPay.appid,
+        partnerid: options.delete(:mch_id) || WxPay.mch_id,
+        timestamp: Time.now.to_i.to_s
+      }.merge(params)
+
+      check_required_options(params, GENERATE_JS_PAY_REQ_REQUIRED_FIELDS)
+
+      params[:sign] = WxPay::Sign.generate(params)
+
+      params
+    end
+
     INVOKE_REFUND_REQUIRED_FIELDS = %i(out_refund_no total_fee refund_fee op_user_id)
     def self.invoke_refund(params, options = {})
       params = {
