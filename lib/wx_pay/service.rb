@@ -10,6 +10,7 @@ module WxPay
       params = {
         appid: options.delete(:appid) || WxPay.appid,
         mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        key: options.delete(:key) || WxPay.key,
         nonce_str: SecureRandom.uuid.tr('-', '')
       }.merge(params)
 
@@ -27,6 +28,7 @@ module WxPay
       params = {
         appid: options.delete(:appid) || WxPay.appid,
         partnerid: options.delete(:mch_id) || WxPay.mch_id,
+        key: options.delete(:key) || WxPay.key,
         package: 'Sign=WXPay',
         timestamp: Time.now.to_i.to_s
       }.merge(params)
