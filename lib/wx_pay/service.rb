@@ -38,17 +38,17 @@ module WxPay
       params
     end
 
-    GENERATE_JS_PAY_REQ_REQUIRED_FIELDS = %i(package noncestr)
+    GENERATE_JS_PAY_REQ_REQUIRED_FIELDS = %i(appId nonceStr package)
     def self.generate_js_pay_req(params, options = {})
       params = {
-        appid: options.delete(:appid) || WxPay.appid,
-        partnerid: options.delete(:mch_id) || WxPay.mch_id,
-        timestamp: Time.now.to_i.to_s
+        appId: options.delete(:appid) || WxPay.appid,
+        timeStamp: Time.now.to_i.to_s,
+        signType: 'MD5'
       }.merge(params)
 
       check_required_options(params, GENERATE_JS_PAY_REQ_REQUIRED_FIELDS)
 
-      params[:sign] = WxPay::Sign.generate(params)
+      params[:paySign] = WxPay::Sign.generate(params)
 
       params
     end
