@@ -16,7 +16,7 @@ gem 'wx_pay'
 or development version
 
 ```ruby
-gem 'wx_pay', :github => 'jasl/wxpay'
+gem 'wx_pay', :github => 'jasl/wx_pay'
 ```
 
 And then execute:
