@@ -22,6 +22,24 @@ module WxPay
 
       r
     end
+    
+    INVOKE_CLOSEORDER_REQUIRED_FIELDS = %i(out_trade_no)
+    def self.invoke_closeorder(params, options = {})
+      params = {
+        appid: options.delete(:appid) || WxPay.appid,
+        mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        key: options.delete(:key) || WxPay.key,
+        nonce_str: SecureRandom.uuid.tr('-', '')
+      }.merge(params)  
+
+      check_required_options(params, INVOKE_CLOSEORDER_REQUIRED_FIELDS)
+
+      r = invoke_remote("#{GATEWAY_URL}/pay/closeorder", make_payload(params), options)
+
+      yield r if block_given?
+
+      r
+    end
 
     GENERATE_APP_PAY_REQ_REQUIRED_FIELDS = %i(prepayid noncestr)
     def self.generate_app_pay_req(params, options = {})
