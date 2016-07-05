@@ -5,7 +5,7 @@ module WxPay
   module Service
     GATEWAY_URL = 'https://api.mch.weixin.qq.com'
 
-    INVOKE_UNIFIEDORDER_REQUIRED_FIELDS = %i(body out_trade_no total_fee spbill_create_ip notify_url trade_type)
+    INVOKE_UNIFIEDORDER_REQUIRED_FIELDS = [:body, :out_trade_no, :total_fee, :spbill_create_ip, :notify_url, :trade_type]
     def self.invoke_unifiedorder(params, options = {})
       params = {
         appid: options.delete(:appid) || WxPay.appid,
@@ -23,7 +23,7 @@ module WxPay
       r
     end
     
-    INVOKE_CLOSEORDER_REQUIRED_FIELDS = %i(out_trade_no)
+    INVOKE_CLOSEORDER_REQUIRED_FIELDS = [:out_trade_no]
     def self.invoke_closeorder(params, options = {})
       params = {
         appid: options.delete(:appid) || WxPay.appid,
@@ -41,7 +41,7 @@ module WxPay
       r
     end
 
-    GENERATE_APP_PAY_REQ_REQUIRED_FIELDS = %i(prepayid noncestr)
+    GENERATE_APP_PAY_REQ_REQUIRED_FIELDS = [:prepayid, :noncestr]
     def self.generate_app_pay_req(params, options = {})
       params = {
         appid: options.delete(:appid) || WxPay.appid,
@@ -58,7 +58,7 @@ module WxPay
       params
     end
 
-    GENERATE_JS_PAY_REQ_REQUIRED_FIELDS = %i(appId nonceStr package)
+    GENERATE_JS_PAY_REQ_REQUIRED_FIELDS = [:appid, :noncestr, :package]
     def self.generate_js_pay_req(params, options = {})
       params = {
         appId: options.delete(:appid) || WxPay.appid,
@@ -73,7 +73,7 @@ module WxPay
       params
     end
 
-    INVOKE_REFUND_REQUIRED_FIELDS = %i(out_refund_no total_fee refund_fee op_user_id)
+    INVOKE_REFUND_REQUIRED_FIELDS = [:out_refund_no, :total_fee, :refund_fee, :op_user_id]
     def self.invoke_refund(params, options = {})
       params = {
         appid: options.delete(:appid) || WxPay.appid,
@@ -98,7 +98,7 @@ module WxPay
       r
     end
 
-    INVOKE_TRANSFER_REQUIRED_FIELDS = %i(partner_trade_no openid check_name amount desc spbill_create_ip)
+    INVOKE_TRANSFER_REQUIRED_FIELDS = [:partner_trade_no, :openid, :check_name, :amount, :desc, :spbill_create_ip]
     def self.invoke_transfer(params, options = {})
       params = {
         mch_appid: options.delete(:appid) || WxPay.appid,
@@ -121,7 +121,7 @@ module WxPay
       r
     end
 
-    INVOKE_REVERSE_REQUIRED_FIELDS = %i(out_trade_no)
+    INVOKE_REVERSE_REQUIRED_FIELDS = [:out_trade_no]
     def self.invoke_reverse(params, options = {})
       params = {
         appid: options.delete(:appid) || WxPay.appid,
@@ -144,7 +144,7 @@ module WxPay
       r
     end
 
-    INVOKE_MICROPAY_REQUIRED_FIELDS = %i(body out_trade_no total_fee spbill_create_ip auth_code)
+    INVOKE_MICROPAY_REQUIRED_FIELDS = [:body, :out_trade_no, :total_fee, :spbill_create_ip, :auth_code]
     def self.invoke_micropay(params, options = {})
       params = {
         appid: options.delete(:appid) || WxPay.appid,
@@ -167,7 +167,7 @@ module WxPay
       r
     end
 
-    ORDER_QUERY_REQUIRED_FIELDS = %i(out_trade_no)
+    ORDER_QUERY_REQUIRED_FIELDS = [:out_trade_no]
     def self.order_query(params, options = {})
       params = {
         appid: options.delete(:appid) || WxPay.appid,
