@@ -5,8 +5,8 @@ module WxPay
     def self.generate(params)
       key = params.delete(:key)
 
-      query = params.sort.map do |key, value|
-        "#{key}=#{value}" if value != "" && !value.nil?
+      query = params.sort.map do |k, v|
+        "#{k}=#{v}" if v.to_s != ''
       end.compact.join('&')
 
       Digest::MD5.hexdigest("#{query}&key=#{key || WxPay.key}").upcase

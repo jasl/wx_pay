@@ -7,7 +7,8 @@ module WxPay
   @extra_rest_client_options = {}
 
   class<< self
-    attr_accessor :appid, :mch_id, :key, :apiclient_cert, :apiclient_key, :extra_rest_client_options
+    attr_accessor :appid, :mch_id, :key, :extra_rest_client_options
+    attr_reader :apiclient_cert, :apiclient_key
 
     def set_apiclient_by_pkcs12(str, pass)
       pkcs12 = OpenSSL::PKCS12.new(str, pass)
