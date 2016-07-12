@@ -183,7 +183,24 @@ module WxPay
 
       r
     end
-    
+
+    DOWNLOAD_BILL_REQUIRED_FIELDS = [:bill_date, :bill_type]
+    def self.download_bill(params, options = {})
+      params = {
+        appid: options.delete(:appid) || WxPay.appid,
+        mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        nonce_str: SecureRandom.uuid.tr('-', ''),
+      }.merge(params)
+
+      check_required_options(params, DOWNLOAD_BILL_REQUIRED_FIELDS)
+
+      r = invoke_remote("#{GATEWAY_URL}/pay/downloadbill", make_payload(params), options)
+
+      yield r if block_given?
+
+      r
+    end
+
     def self.sendgroupredpack(params, options={})
       params = {
         wxappid: options.delete(:appid) || WxPay.appid,
@@ -255,10 +272,10 @@ module WxPay
           }.merge(options)
         )
 
-        if r
+        begin
           WxPay::Result.new(Hash.from_xml(r))
-        else
-          nil
+        rescue REXML::ParseException
+          r
         end
       end
     end
