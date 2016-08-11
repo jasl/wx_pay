@@ -5,9 +5,10 @@ require 'openssl'
 
 module WxPay
   @extra_rest_client_options = {}
+  @debug_mode = true
 
   class<< self
-    attr_accessor :appid, :mch_id, :key, :extra_rest_client_options
+    attr_accessor :appid, :mch_id, :key, :extra_rest_client_options, :debug_mode
     attr_reader :apiclient_cert, :apiclient_key
 
     def set_apiclient_by_pkcs12(str, pass)
@@ -24,6 +25,10 @@ module WxPay
 
     def apiclient_key=(key)
       @apiclient_key = OpenSSL::PKey::RSA.new(key)
+    end
+
+    def debug_mode?
+      @debug_mode
     end
   end
 end
