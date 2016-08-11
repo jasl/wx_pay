@@ -249,6 +249,7 @@ module WxPay
       private
 
       def check_required_options(options, names)
+        return if !WxPay.debug_mode?
         names.each do |name|
           warn("WxPay Warn: missing required option: #{name}") unless options.has_key?(name)
         end
