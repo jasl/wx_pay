@@ -98,6 +98,23 @@ module WxPay
       r
     end
 
+    REFUND_QUERY_REQUIRED_FIELDS = [:out_trade_no]
+    def self.refund_query(params, options = {})
+      params = {
+        appid: options.delete(:appid) || WxPay.appid,
+        mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        nonce_str: SecureRandom.uuid.tr('-', '')
+      }.merge(params)
+
+      check_required_options(params, ORDER_QUERY_REQUIRED_FIELDS)
+
+      r = invoke_remote("#{GATEWAY_URL}/pay/refundquery", make_payload(params), options)
+
+      yield r if block_given?
+
+      r
+    end
+
     INVOKE_TRANSFER_REQUIRED_FIELDS = [:partner_trade_no, :openid, :check_name, :amount, :desc, :spbill_create_ip]
     def self.invoke_transfer(params, options = {})
       params = {
