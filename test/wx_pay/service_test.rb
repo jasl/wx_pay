@@ -13,8 +13,6 @@ class ServiceTest < MiniTest::Test
   end
 
   def test_invoke_refund
-
-
     response_body = <<-EOF
      <xml>
        <return_code><![CDATA[SUCCESS]]></return_code>
