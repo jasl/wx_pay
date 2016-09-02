@@ -58,11 +58,12 @@ module WxPay
       params
     end
 
-    GENERATE_JS_PAY_REQ_REQUIRED_FIELDS = [:appid, :noncestr, :package]
+    GENERATE_JS_PAY_REQ_REQUIRED_FIELDS = [:prepayid, :noncestr]
     def self.generate_js_pay_req(params, options = {})
       params = {
         appId: options.delete(:appid) || WxPay.appid,
-        nonceStr: params.delete(:noncestr),
+        package: "prepay_id=#{params[:prepayid]}",
+        nonceStr: params[:noncestr],
         timeStamp: Time.now.to_i.to_s,
         signType: 'MD5'
       }.merge(params)
