@@ -134,6 +134,27 @@ r = WxPay::Service::generate_app_pay_req params
 #    }
 ```
 
+#### pay request for JSAPI
+
+```
+# required fields
+params = {
+  prepayid: '1101000000140415649af9fc314aa427', # fetch by call invoke_unifiedorder with `trade_type` is `JSAPI`
+  noncestr: '1101000000140429eb40476f8896f4c9', # must same as given to invoke_unifiedorder
+}
+
+# call generate_js_pay_req
+r = WxPay::Service.generate_js_pay_req params
+# {
+#   "appId": "wx020c5c792c8537de",
+#   "package": "prepay_id=wx20160902211806a11ccee7a20956539837",
+#   "nonceStr": "2vS5AJUD7uyaa5h9",
+#   "timeStamp": "1472822286",
+#   "signType": "MD5",
+#   "paySign": "A52433CB75CA8D58B67B2BB45A79AA01"
+# }
+```
+
 #### Notify Process
 
 A simple example of processing notify.
