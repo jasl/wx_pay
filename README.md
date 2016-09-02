@@ -122,7 +122,7 @@ params = {
 }
 
 # call generate_app_pay_req
-r = WxPay::Service::generate_app_pay_req params
+r = WxPay::Service.generate_app_pay_req params
 # => {
 #      appid: 'wxd930ea5d5a258f4f',
 #      partnerid: '1900000109',
@@ -181,7 +181,7 @@ you can pass `appid`, `mch_id`, `key`, `apiclient_cert`, `apiclient_key` as a ha
 
 For example
 ```ruby
-WxPay::Service::generate_app_pay_req params, {appid: 'APPID', mch_id: 'MCH_ID', key: 'KEY'}
+WxPay::Service.generate_app_pay_req params, {appid: 'APPID', mch_id: 'MCH_ID', key: 'KEY'}
 ```
 
 ## Contributing
