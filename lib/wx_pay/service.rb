@@ -62,6 +62,7 @@ module WxPay
     def self.generate_js_pay_req(params, options = {})
       params = {
         appId: options.delete(:appid) || WxPay.appid,
+        nonceStr: params.delete(:noncestr),
         timeStamp: Time.now.to_i.to_s,
         signType: 'MD5'
       }.merge(params)
