@@ -136,7 +136,7 @@ r = WxPay::Service.generate_app_pay_req params
 
 #### pay request for JSAPI
 
-```
+``` ruby
 # required fields
 params = {
   prepayid: '1101000000140415649af9fc314aa427', # fetch by call invoke_unifiedorder with `trade_type` is `JSAPI`
