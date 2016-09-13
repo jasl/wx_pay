@@ -291,7 +291,11 @@ module WxPay
           }.merge(options)
         )
 
-        WxPay::Result.new(Hash.from_xml(r))
+        begin
+          WxPay::Result.new(Hash.from_xml(r))
+        rescue REXML::ParseException
+          r
+        end
       end
     end
   end
