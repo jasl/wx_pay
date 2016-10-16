@@ -1,9 +1,36 @@
 require 'rest_client'
+require 'json'
+require 'rails'
 require 'active_support/core_ext/hash/conversions'
 
 module WxPay
   module Service
     GATEWAY_URL = 'https://api.mch.weixin.qq.com'
+
+    def self.authenticate_openid(code)
+      """
+        Acquire openid from wechat server.
+        When trade type is JSAPI, openid is required in params to do unifiedorder.
+        If application does not integrate wechat auth plugin, this function can be used to get openid.
+        Wechat doc for explaining acquire openid: http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
+
+        params:
+          code, the code return by wechat server after user authentification
+        return:
+          openid
+      """
+      # step 1. Redirect to wechat server to get code. If code exits, it can be skiped.
+      if code.nil?
+        redirect_to "https://open.weixin.qq.com/connect/oauth2/authorize?appid=#{WxPay.appid}&redirect_uri=#{request.url}&response_type=code&scope=snsapi_base&state=#{request.url}#wechat_redirect"
+      end
+
+      # step 2. Get Auth Info and openid from wechat server with code
+      begin
+        url    = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=#{WxPay.appid}&secret=#{WxPay.appsecret}&code=#{code}&grant_type=authorization_code"
+        weixin_openid = JSON.parse(URI.parse(url).read)["openid"]
+      end
+      weixin_openid
+    end
 
     INVOKE_UNIFIEDORDER_REQUIRED_FIELDS = [:body, :out_trade_no, :total_fee, :spbill_create_ip, :notify_url, :trade_type]
     def self.invoke_unifiedorder(params, options = {})

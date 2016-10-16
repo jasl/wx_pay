@@ -36,6 +36,7 @@ Create `config/initializers/wx_pay.rb` and put following configurations into it.
 WxPay.appid = 'YOUR_APPID'
 WxPay.key = 'YOUR_KEY'
 WxPay.mch_id = 'YOUR_MCH_ID'
+WxPay.appsecret = 'YOUR_SECREDT'
 WxPay.debug_mode = true # default is `true`
 
 # cert, see https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=4_3
@@ -86,6 +87,14 @@ r = WxPay::Service.invoke_unifiedorder params
 #      "prepay_id"=>"wx2014111104255143b7605afb0314593866",
 #      "trade_type"=>"JSAPI"
 #    }
+```
+
+"JSAPI" requires openid in params, authenticate_openid can be used to get it, in case there is not wechat auth integration.
+
+```ruby
+code = params[:code]
+r = WxPay::Service.authenticate_openid code
+# => 'OPENID'
 ```
 
 If your trade type is "NATIVE", the result would be like this.
