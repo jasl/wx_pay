@@ -89,6 +89,14 @@ r = WxPay::Service.invoke_unifiedorder params
 #    }
 ```
 
+"JSAPI" requires openid in params, authenticate_openid can be used to get it, in case there is not wechat auth integration.
+
+```ruby
+code = params[:code]
+r = WxPay::Service.authenticate_openid code
+# => 'OPENID'
+```
+
 If your trade type is "NATIVE", the result would be like this.
 
 ```ruby

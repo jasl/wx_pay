@@ -1,25 +1,33 @@
 require 'rest_client'
+require 'json'
+require 'rails'
 require 'active_support/core_ext/hash/conversions'
 
 module WxPay
   module Service
     GATEWAY_URL = 'https://api.mch.weixin.qq.com'
 
-    def self.authenticate_openid(params)
-      # 当session中没有openid时，则为非登录状态
-      code = params[:code]
+    def self.authenticate_openid(code)
+      """
+        Acquire openid from wechat server.
+        When trade type is JSAPI, openid is required in params to do unifiedorder.
+        If application does not integrate wechat auth plugin, this function can be used to get openid.
+        Wechat doc for explaining acquire openid: http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
 
-      # 如果code参数为空，则为认证第一步，重定向到微信认证
+        params:
+          code, the code return by wechat server after user authentification
+        return:
+          openid
+      """
+      # step 1. Redirect to wechat server to get code. If code exits, it can be skiped.
       if code.nil?
         redirect_to "https://open.weixin.qq.com/connect/oauth2/authorize?appid=#{WxPay.appid}&redirect_uri=#{request.url}&response_type=code&scope=snsapi_base&state=#{request.url}#wechat_redirect"
       end
 
-      #如果code参数不为空，则认证到第二步，通过code获取openid，并保存到session中
+      # step 2. Get Auth Info and openid from wechat server with code
       begin
         url    = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=#{WxPay.appid}&secret=#{WxPay.appsecret}&code=#{code}&grant_type=authorization_code"
         weixin_openid = JSON.parse(URI.parse(url).read)["openid"]
-      rescue Exception => e
-        puts "Can not get Weixin Open ID"
       end
       weixin_openid
     end
