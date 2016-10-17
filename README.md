@@ -36,12 +36,14 @@ Create `config/initializers/wx_pay.rb` and put following configurations into it.
 WxPay.appid = 'YOUR_APPID'
 WxPay.key = 'YOUR_KEY'
 WxPay.mch_id = 'YOUR_MCH_ID'
-WxPay.appsecret = 'YOUR_SECREDT'
 WxPay.debug_mode = true # default is `true`
 
 # cert, see https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=4_3
 # using PCKS12
 WxPay.set_apiclient_by_pkcs12(File.read(pkcs12_filepath), pass)
+
+# if you want to use `generate_authorize_req` and `authenticate`
+WxPay.appsecret = 'YOUR_SECRET' 
 
 # optional - configurations for RestClient timeout, etc.
 WxPay.extra_rest_client_options = {timeout: 2, open_timeout: 3}
@@ -89,13 +91,9 @@ r = WxPay::Service.invoke_unifiedorder params
 #    }
 ```
 
-"JSAPI" requires openid in params, authenticate_openid can be used to get it, in case there is not wechat auth integration.
-
-```ruby
-code = params[:code]
-r = WxPay::Service.authenticate_openid code
-# => 'OPENID'
-```
+> "JSAPI" requires openid in params,
+in most cases I suggest you using [omniauth](https://github.com/omniauth/omniauth) with [omniauth-wechat-oauth2](https://github.com/skinnyworm/omniauth-wechat-oauth2) to resolve this,
+but `wx_pay` provides `generate_authorize_url` and `authenticate` to help you get Wechat authorization in simple case.
 
 If your trade type is "NATIVE", the result would be like this.
 
@@ -188,7 +186,7 @@ def notify
 end
 ```
 
-### Integretion with QRCode(二维码)
+### Integrate with QRCode(二维码)
 
 Wechat payment integrating with QRCode is a recommended process flow which will bring users comfortable experience. It is recommended to generate QRCode using `rqrcode` and `rqrcode_png`.
 

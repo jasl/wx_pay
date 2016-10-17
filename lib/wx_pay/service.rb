@@ -1,35 +1,27 @@
 require 'rest_client'
 require 'json'
-require 'rails'
+require 'securerandom'
 require 'active_support/core_ext/hash/conversions'
 
 module WxPay
   module Service
     GATEWAY_URL = 'https://api.mch.weixin.qq.com'
 
-    def self.authenticate_openid(code)
-      """
-        Acquire openid from wechat server.
-        When trade type is JSAPI, openid is required in params to do unifiedorder.
-        If application does not integrate wechat auth plugin, this function can be used to get openid.
-        Wechat doc for explaining acquire openid: http://mp.weixin.qq.com/wiki/17/c0f37d5704f0b64713d5d2c37b468d75.html
+    def self.generate_authorize_url(redirect_uri, state = nil)
+      state ||= SecureRandom.hex 16
+      "https://open.weixin.qq.com/connect/oauth2/authorize?appid=#{WxPay.appid}&redirect_uri=#{redirect_uri}&response_type=code&scope=snsapi_base&state=#{state}"
+    end
 
-        params:
-          code, the code return by wechat server after user authentification
-        return:
-          openid
-      """
-      # step 1. Redirect to wechat server to get code. If code exits, it can be skiped.
-      if code.nil?
-        redirect_to "https://open.weixin.qq.com/connect/oauth2/authorize?appid=#{WxPay.appid}&redirect_uri=#{request.url}&response_type=code&scope=snsapi_base&state=#{request.url}#wechat_redirect"
-      end
+    def self.authenticate(authorization_code, options = {})
+      options = WxPay.extra_rest_client_options.merge(options)
+      url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=#{WxPay.appid}&secret=#{WxPay.appsecret}&code=#{authorization_code}&grant_type=authorization_code"
 
-      # step 2. Get Auth Info and openid from wechat server with code
-      begin
-        url    = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=#{WxPay.appid}&secret=#{WxPay.appsecret}&code=#{code}&grant_type=authorization_code"
-        weixin_openid = JSON.parse(URI.parse(url).read)["openid"]
-      end
-      weixin_openid
+      ::JSON.parse(RestClient::Request.execute(
+        {
+          method: :get,
+          url: url
+        }.merge(options)
+      ), quirks_mode: true)
     end
 
     INVOKE_UNIFIEDORDER_REQUIRED_FIELDS = [:body, :out_trade_no, :total_fee, :spbill_create_ip, :notify_url, :trade_type]
@@ -220,9 +212,9 @@ module WxPay
         nonce_str: SecureRandom.uuid.tr('-', '')
       }.merge(params)
 
-      check_required_options(params, ORDER_QUERY_REQUIRED_FIELDS)
 
       r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{GATEWAY_URL}/pay/orderquery", make_payload(params), options)))
+      check_required_options(params, ORDER_QUERY_REQUIRED_FIELDS)
 
       yield r if block_given?
 
@@ -294,7 +286,7 @@ module WxPay
       private
 
       def check_required_options(options, names)
-        return if !WxPay.debug_mode?
+        return unless WxPay.debug_mode?
         names.each do |name|
           warn("WxPay Warn: missing required option: #{name}") unless options.has_key?(name)
         end
