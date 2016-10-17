@@ -1,5 +1,6 @@
 require 'rest_client'
 require 'json'
+require 'cgi'
 require 'securerandom'
 require 'active_support/core_ext/hash/conversions'
 
@@ -9,7 +10,7 @@ module WxPay
 
     def self.generate_authorize_url(redirect_uri, state = nil)
       state ||= SecureRandom.hex 16
-      "https://open.weixin.qq.com/connect/oauth2/authorize?appid=#{WxPay.appid}&redirect_uri=#{redirect_uri}&response_type=code&scope=snsapi_base&state=#{state}"
+      "https://open.weixin.qq.com/connect/oauth2/authorize?appid=#{WxPay.appid}&redirect_uri=#{CGI::escape redirect_uri}&response_type=code&scope=snsapi_base&state=#{state}"
     end
 
     def self.authenticate(authorization_code, options = {})
