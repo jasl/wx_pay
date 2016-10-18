@@ -1,9 +1,29 @@
 require 'rest_client'
+require 'json'
+require 'cgi'
+require 'securerandom'
 require 'active_support/core_ext/hash/conversions'
 
 module WxPay
   module Service
     GATEWAY_URL = 'https://api.mch.weixin.qq.com'
+
+    def self.generate_authorize_url(redirect_uri, state = nil)
+      state ||= SecureRandom.hex 16
+      "https://open.weixin.qq.com/connect/oauth2/authorize?appid=#{WxPay.appid}&redirect_uri=#{CGI::escape redirect_uri}&response_type=code&scope=snsapi_base&state=#{state}"
+    end
+
+    def self.authenticate(authorization_code, options = {})
+      options = WxPay.extra_rest_client_options.merge(options)
+      url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=#{WxPay.appid}&secret=#{WxPay.appsecret}&code=#{authorization_code}&grant_type=authorization_code"
+
+      ::JSON.parse(RestClient::Request.execute(
+        {
+          method: :get,
+          url: url
+        }.merge(options)
+      ), quirks_mode: true)
+    end
 
     INVOKE_UNIFIEDORDER_REQUIRED_FIELDS = [:body, :out_trade_no, :total_fee, :spbill_create_ip, :notify_url, :trade_type]
     def self.invoke_unifiedorder(params, options = {})
@@ -193,9 +213,9 @@ module WxPay
         nonce_str: SecureRandom.uuid.tr('-', '')
       }.merge(params)
 
-      check_required_options(params, ORDER_QUERY_REQUIRED_FIELDS)
 
       r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{GATEWAY_URL}/pay/orderquery", make_payload(params), options)))
+      check_required_options(params, ORDER_QUERY_REQUIRED_FIELDS)
 
       yield r if block_given?
 
@@ -267,7 +287,7 @@ module WxPay
       private
 
       def check_required_options(options, names)
-        return if !WxPay.debug_mode?
+        return unless WxPay.debug_mode?
         names.each do |name|
           warn("WxPay Warn: missing required option: #{name}") unless options.has_key?(name)
         end
