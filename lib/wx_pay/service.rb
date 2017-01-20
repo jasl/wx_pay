@@ -94,7 +94,7 @@ module WxPay
       params
     end
 
-    INVOKE_REFUND_REQUIRED_FIELDS = [:out_refund_no, :total_fee, :refund_fee, :op_user_id, :out_trade_no, :transaction_id]
+    INVOKE_REFUND_REQUIRED_FIELDS = [:out_refund_no, :total_fee, :refund_fee, :op_user_id]
     # out_trade_no 和 transaction_id 是二选一(必填)
     def self.invoke_refund(params, options = {})
       params = {
@@ -106,6 +106,7 @@ module WxPay
       params[:op_user_id] ||= params[:mch_id]
 
       check_required_options(params, INVOKE_REFUND_REQUIRED_FIELDS)
+      warn("WxPay Warn: missing required option: out_trade_no or transaction_id must have one") if ([:out_trade_no, :transaction_id] & params.keys) == []
 
       options = {
         ssl_client_cert: options.delete(:apiclient_cert) || WxPay.apiclient_cert,
