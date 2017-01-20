@@ -6,9 +6,9 @@ module WxPay
       super nil # Or it will call `super result`
 
       self[:raw] = result
-      
-      if result['xml'].class == Hash
-        result['xml'].each_pair do |k, v|
+      result_hash = Hash.from_xml(result)
+      if result_hash['xml'].class == Hash
+        result_hash['xml'].each_pair do |k, v|
           self[k] = v
         end
       end
