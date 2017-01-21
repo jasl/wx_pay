@@ -164,8 +164,8 @@ module WxPay
     GETTRANSFERINFO_FIELDS = [:partner_trade_no]
     def self.gettransferinfo(params, options = {})
       params = {
-        mch_appid: options.delete(:appid) || WxPay.appid,
-        mchid: options.delete(:mch_id) || WxPay.mch_id,
+        appid: options.delete(:appid) || WxPay.appid,
+        mch_id: options.delete(:mch_id) || WxPay.mch_id,
         nonce_str: SecureRandom.uuid.tr('-', '')
       }.merge(params)
 
