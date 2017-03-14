@@ -42,7 +42,7 @@ module WxPay
 
       r
     end
-    
+
     INVOKE_CLOSEORDER_REQUIRED_FIELDS = [:out_trade_no]
     def self.invoke_closeorder(params, options = {})
       params = {
@@ -50,7 +50,7 @@ module WxPay
         mch_id: options.delete(:mch_id) || WxPay.mch_id,
         key: options.delete(:key) || WxPay.key,
         nonce_str: SecureRandom.uuid.tr('-', '')
-      }.merge(params)  
+      }.merge(params)
 
       check_required_options(params, INVOKE_CLOSEORDER_REQUIRED_FIELDS)
 
@@ -85,6 +85,7 @@ module WxPay
       params = {
         appId: options.delete(:appid) || WxPay.appid,
         package: "prepay_id=#{params.delete(:prepayid)}",
+        key: options.delete(:key) || WxPay.key,
         nonceStr: params.delete(:noncestr),
         timeStamp: Time.now.to_i.to_s,
         signType: 'MD5'
@@ -285,7 +286,7 @@ module WxPay
 
       r
     end
-    
+
     def self.sendredpack(params, options={})
       params = {
         wxappid: options.delete(:appid) || WxPay.appid,
