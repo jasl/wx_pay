@@ -22,6 +22,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "bundler", '~> 1'
   s.add_development_dependency "rake", '~> 11.2'
-  s.add_development_dependency "fakeweb", '~> 1'
+  s.add_development_dependency "webmock", '~> 2.3'
   s.add_development_dependency "minitest", '~> 5'
 end

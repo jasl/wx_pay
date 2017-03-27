@@ -32,11 +32,7 @@ class ServiceTest < MiniTest::Test
      </xml>
     EOF
 
-    FakeWeb.register_uri(
-      :post,
-      %r|https://api\.mch\.weixin\.qq\.com*|,
-      body: response_body
-    )
+    stub_request(:post, 'api.mch.weixin.qq.com').to_return(body: response_body)
   end
 
   def test_accept_multiple_app_id_when_invoke
