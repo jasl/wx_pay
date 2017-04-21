@@ -5,6 +5,8 @@ copied from [alipay](https://github.com/chloerei/alipay) .
 
 Please read official document first: <https://mp.weixin.qq.com/paymch/readtemplate?t=mp/business/course3_tmpl&lang=zh_CN>.
 
+[![Build Status](https://travis-ci.org/jasl/wx_pay.svg?branch=master)](https://travis-ci.org/jasl/wx_pay)
+
 ## Installation
 
 Add this line to your Gemfile:
