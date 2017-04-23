@@ -24,6 +24,19 @@ module WxPay
         }.merge(options)
       ), quirks_mode: true)
     end
+    
+    def self.authenticate_from_weapp(js_code, options = {})
+      options = WxPay.extra_rest_client_options.merge(options)
+      url = "https://api.weixin.qq.com/sns/jscode2session?appid=#{WxPay.appid}&secret=#{WxPay.appsecret}&js_code=#{js_code}&grant_type=authorization_code"
+
+      ::JSON.parse(RestClient::Request.execute(
+        {
+          method: :get,
+          url: url
+        }.merge(options)
+      ), quirks_mode: true)
+    end
+
 
     def self.authenticate_from_weapp(js_code, options = {})
       options = WxPay.extra_rest_client_options.merge(options)
