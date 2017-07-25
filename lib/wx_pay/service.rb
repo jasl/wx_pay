@@ -8,6 +8,16 @@ module WxPay
   module Service
     GATEWAY_URL = 'https://api.mch.weixin.qq.com'
 
+    def self.gateway_url
+      url = WxPay.sandbox? ? '/sandboxnew' : ''
+
+      "#{GATEWAY_URL}#{url}"
+    end
+
+    def self.post(url, params, options)
+      WxPay::Result.new(Hash.from_xml(invoke_remote(url, make_payload(params), options)))
+    end
+
     def self.generate_authorize_url(redirect_uri, state = nil)
       state ||= SecureRandom.hex 16
       "https://open.weixin.qq.com/connect/oauth2/authorize?appid=#{WxPay.appid}&redirect_uri=#{CGI::escape redirect_uri}&response_type=code&scope=snsapi_base&state=#{state}"
@@ -48,7 +58,7 @@ module WxPay
 
       check_required_options(params, INVOKE_UNIFIEDORDER_REQUIRED_FIELDS)
 
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{GATEWAY_URL}/pay/unifiedorder", make_payload(params), options)))
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{gateway_url}/pay/unifiedorder", make_payload(params), options)))
 
       yield r if block_given?
 
@@ -66,7 +76,7 @@ module WxPay
 
       check_required_options(params, INVOKE_CLOSEORDER_REQUIRED_FIELDS)
 
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{GATEWAY_URL}/pay/closeorder", make_payload(params), options)))
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{gateway_url}/pay/closeorder", make_payload(params), options)))
 
       yield r if block_given?
 
@@ -127,7 +137,7 @@ module WxPay
         verify_ssl: OpenSSL::SSL::VERIFY_NONE
       }.merge(options)
 
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{GATEWAY_URL}/secapi/pay/refund", make_payload(params), options)))
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{gateway_url}/secapi/pay/refund", make_payload(params), options)))
 
       yield r if block_given?
 
@@ -144,7 +154,7 @@ module WxPay
 
       check_required_options(params, ORDER_QUERY_REQUIRED_FIELDS)
 
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{GATEWAY_URL}/pay/refundquery", make_payload(params), options)))
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{gateway_url}/pay/refundquery", make_payload(params), options)))
 
       yield r if block_given?
 
@@ -167,7 +177,7 @@ module WxPay
         verify_ssl: OpenSSL::SSL::VERIFY_NONE
       }.merge(options)
 
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{GATEWAY_URL}/mmpaymkttransfers/promotion/transfers", make_payload(params), options)))
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{gateway_url}/mmpaymkttransfers/promotion/transfers", make_payload(params), options)))
 
       yield r if block_given?
 
@@ -190,7 +200,7 @@ module WxPay
         verify_ssl: OpenSSL::SSL::VERIFY_NONE
       }.merge(options)
 
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{GATEWAY_URL}/mmpaymkttransfers/gettransferinfo", make_payload(params), options)))
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{gateway_url}/mmpaymkttransfers/gettransferinfo", make_payload(params), options)))
 
       yield r if block_given?
 
@@ -213,7 +223,7 @@ module WxPay
         verify_ssl: OpenSSL::SSL::VERIFY_NONE
       }.merge(options)
 
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{GATEWAY_URL}/secapi/pay/reverse", make_payload(params), options)))
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{gateway_url}/secapi/pay/reverse", make_payload(params), options)))
 
       yield r if block_given?
 
@@ -236,7 +246,7 @@ module WxPay
         verify_ssl: OpenSSL::SSL::VERIFY_NONE
       }.merge(options)
 
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{GATEWAY_URL}/pay/micropay", make_payload(params), options)))
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{gateway_url}/pay/micropay", make_payload(params), options)))
 
       yield r if block_given?
 
@@ -252,7 +262,7 @@ module WxPay
       }.merge(params)
 
 
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{GATEWAY_URL}/pay/orderquery", make_payload(params), options)))
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{gateway_url}/pay/orderquery", make_payload(params), options)))
       check_required_options(params, ORDER_QUERY_REQUIRED_FIELDS)
 
       yield r if block_given?
@@ -270,7 +280,7 @@ module WxPay
 
       check_required_options(params, DOWNLOAD_BILL_REQUIRED_FIELDS)
 
-      r = invoke_remote("#{GATEWAY_URL}/pay/downloadbill", make_payload(params), options)
+      r = invoke_remote("#{gateway_url}/pay/downloadbill", make_payload(params), options)
 
       yield r if block_given?
 
@@ -292,7 +302,7 @@ module WxPay
         verify_ssl: OpenSSL::SSL::VERIFY_NONE
       }.merge(options)
 
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{GATEWAY_URL}/mmpaymkttransfers/sendgroupredpack", make_payload(params), options)))
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{gateway_url}/mmpaymkttransfers/sendgroupredpack", make_payload(params), options)))
 
       yield r if block_given?
 
@@ -314,7 +324,7 @@ module WxPay
         verify_ssl: OpenSSL::SSL::VERIFY_NONE
       }.merge(options)
 
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{GATEWAY_URL}/mmpaymkttransfers/sendredpack", make_payload(params), options)))
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("#{gateway_url}/mmpaymkttransfers/sendredpack", make_payload(params), options)))
 
       yield r if block_given?
 

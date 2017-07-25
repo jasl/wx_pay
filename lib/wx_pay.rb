@@ -4,11 +4,15 @@ require 'wx_pay/service'
 require 'openssl'
 
 module WxPay
+  SANDBOX_SIGNKEY_URL = 'https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey'.freeze
+
   @extra_rest_client_options = {}
   @debug_mode = true
+  @sandbox = false
+
 
   class<< self
-    attr_accessor :appid, :mch_id, :key, :appsecret, :extra_rest_client_options, :debug_mode
+    attr_accessor :appid, :mch_id, :key, :appsecret, :extra_rest_client_options, :debug_mode, :sandbox
     attr_reader :apiclient_cert, :apiclient_key
 
     def set_apiclient_by_pkcs12(str, pass)
@@ -29,6 +33,21 @@ module WxPay
 
     def debug_mode?
       @debug_mode
+    end
+
+    def sandbox?
+      @sandbox
+    end
+
+    def key
+      return @key if !sandbox? || @fetched_sandbox_key
+
+      params = { mch_id: WxPay.mch_id, nonce_str: SecureRandom.uuid.tr('-', '') }
+
+      response = WxPay::Service.post(SANDBOX_SIGNKEY_URL, params, {})
+
+      @key = response.fetch('sandbox_signkey')
+      @fetched_sandbox_key = true
     end
   end
 end
