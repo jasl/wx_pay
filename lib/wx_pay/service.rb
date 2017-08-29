@@ -26,6 +26,16 @@ module WxPay
       ), quirks_mode: true)
     end
 
+    def self.get_sandbox_signkey
+      params = {
+        mch_id: WxPay.mch_id,
+        nonce_str: SecureRandom.uuid.tr('-', '')
+      }
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("/pay/getsignkey", make_payload(params))))
+      yield r if block_given?
+      r
+    end
+
     def self.authenticate_from_weapp(js_code, options = {})
       options = WxPay.extra_rest_client_options.merge(options)
       url = "https://api.weixin.qq.com/sns/jscode2session?appid=#{WxPay.appid}&secret=#{WxPay.appsecret}&js_code=#{js_code}&grant_type=authorization_code"
