@@ -354,14 +354,16 @@ module WxPay
       end
 
       def make_payload(params)
-        r = get_sandbox_signkey
-        if r['return_code'] == WxPay::Result::SUCCESS_FLAG
-          params = params.merge({
-            :mch_id => r['mch_id'] || WxPay.mch_id,
-            :key => r['sandbox_signkey']
-          })
-        else
-          warn("WxPay Warn: fetch sandbox sign key failed #{r['return_msg']}")
+        if WxPay.sandbox_mode?
+          r = get_sandbox_signkey
+          if r['return_code'] == WxPay::Result::SUCCESS_FLAG
+            params = params.merge({
+              :mch_id => r['mch_id'] || WxPay.mch_id,
+              :key => r['sandbox_signkey']
+            })
+          else
+            warn("WxPay Warn: fetch sandbox sign key failed #{r['return_msg']}")
+          end
         end
         xmlify_payload(params)
       end
