@@ -31,7 +31,7 @@ module WxPay
         mch_id: WxPay.mch_id,
         nonce_str: SecureRandom.uuid.tr('-', '')
       }
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("/pay/getsignkey", make_payload(params))))
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("/pay/getsignkey", xmlify_payload(params))))
       yield r if block_given?
       r
     end
@@ -347,10 +347,23 @@ module WxPay
         end
       end
 
-      def make_payload(params)
+      def xmlify_payload(params)
         sign = WxPay::Sign.generate(params)
         params.delete(:key) if params[:key]
         "<xml>#{params.map { |k, v| "<#{k}>#{v}</#{k}>" }.join}<sign>#{sign}</sign></xml>"
+      end
+
+      def make_payload(params)
+        r = get_sandbox_signkey
+        if r['return_code'] == WxPay::Result::SUCCESS_FLAG
+          params = params.merge({
+            :mch_id => r['mch_id'] || WxPay.mch_id,
+            :key => r['sandbox_signkey']
+          })
+        else
+          warn("WxPay Warn: fetch sandbox sign key failed #{r['return_msg']}")
+        end
+        xmlify_payload(params)
       end
 
       def invoke_remote(url, payload, options = {})
