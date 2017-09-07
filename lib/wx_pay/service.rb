@@ -361,6 +361,8 @@ module WxPay
               :mch_id => r['mch_id'] || WxPay.mch_id,
               :key => r['sandbox_signkey']
             })
+            WxPay.sandbox_key = r['sandbox_signkey']
+            WxPay.sandbox_mch_id = r['mch_id']
           else
             warn("WxPay Warn: fetch sandbox sign key failed #{r['return_msg']}")
           end

@@ -9,7 +9,8 @@ module WxPay
   @sandbox_mode = false
 
   class<< self
-    attr_accessor :appid, :mch_id, :key, :appsecret, :extra_rest_client_options, :debug_mode, :sandbox_mode
+    attr_accessor :appid, :mch_id, :key, :appsecret, :extra_rest_client_options, :debug_mode
+    attr_accessor :sandbox_mode, :sandbox_key, :sandbox_mch_id
     attr_reader :apiclient_cert, :apiclient_key
 
     def set_apiclient_by_pkcs12(str, pass)
