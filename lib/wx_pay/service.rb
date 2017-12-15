@@ -209,6 +209,71 @@ module WxPay
       r
     end
 
+    # 获取加密银行卡号和收款方用户名的RSA公钥
+    def self.risk_get_public_key(options = {})
+      params = {
+        mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        nonce_str: SecureRandom.uuid.tr('-', ''),
+        sign_type: 'MD5'
+      }
+
+      options = {
+        ssl_client_cert: options.delete(:apiclient_cert) || WxPay.apiclient_cert,
+        ssl_client_key: options.delete(:apiclient_key) || WxPay.apiclient_key,
+        verify_ssl: OpenSSL::SSL::VERIFY_NONE
+      }.merge(options)
+
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("https://fraud.mch.weixin.qq.com/risk/getpublickey", make_payload(params), options)))
+
+      yield r if block_given?
+
+      r
+    end
+
+    PAY_BANK_FIELDS = [:enc_bank_no, :enc_true_name, :bank_code, :amount, :desc]
+    def self.pay_bank(params, options = {})
+      params = {
+        mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        nonce_str: SecureRandom.uuid.tr('-', '')
+      }.merge(params)
+
+      check_required_options(params, PAY_BANK_FIELDS)
+
+      options = {
+        ssl_client_cert: options.delete(:apiclient_cert) || WxPay.apiclient_cert,
+        ssl_client_key: options.delete(:apiclient_key) || WxPay.apiclient_key,
+        verify_ssl: OpenSSL::SSL::VERIFY_NONE
+      }.merge(options)
+
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("/mmpaysptrans/pay_bank", make_payload(params), options)))
+
+      yield r if block_given?
+
+      r
+    end
+
+    QUERY_BANK_FIELDS = [:partner_trade_no]
+    def self.query_bank(params, options = {})
+      params = {
+        mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        nonce_str: SecureRandom.uuid.tr('-', '')
+      }.merge(params)
+
+      check_required_options(params, QUERY_BANK_FIELDS)
+
+      options = {
+        ssl_client_cert: options.delete(:apiclient_cert) || WxPay.apiclient_cert,
+        ssl_client_key: options.delete(:apiclient_key) || WxPay.apiclient_key,
+        verify_ssl: OpenSSL::SSL::VERIFY_NONE
+      }.merge(options)
+
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("/mmpaysptrans/query_bank", make_payload(params), options)))
+
+      yield r if block_given?
+
+      r
+    end
+
     INVOKE_REVERSE_REQUIRED_FIELDS = [:out_trade_no]
     def self.invoke_reverse(params, options = {})
       params = {
@@ -372,11 +437,12 @@ module WxPay
 
       def invoke_remote(url, payload, options = {})
         options = WxPay.extra_rest_client_options.merge(options)
+        url = url.start_with?("http") ? url : "#{get_gateway_url}#{url}"
 
         RestClient::Request.execute(
           {
             method: :post,
-            url: "#{get_gateway_url}#{url}",
+            url: url,
             payload: payload,
             headers: { content_type: 'application/xml' }
           }.merge(options)
