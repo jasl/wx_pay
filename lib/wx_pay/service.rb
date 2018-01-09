@@ -8,6 +8,7 @@ module WxPay
   module Service
     GATEWAY_URL = 'https://api.mch.weixin.qq.com'.freeze
     SANDBOX_GATEWAY_URL = 'https://api.mch.weixin.qq.com/sandboxnew'.freeze
+    FRAUD_GATEWAY_URL = 'https://fraud.mch.weixin.qq.com'.freeze
 
     def self.generate_authorize_url(redirect_uri, state = nil)
       state ||= SecureRandom.hex 16
@@ -223,10 +224,11 @@ module WxPay
       options = {
         ssl_client_cert: options.delete(:apiclient_cert) || WxPay.apiclient_cert,
         ssl_client_key: options.delete(:apiclient_key) || WxPay.apiclient_key,
-        verify_ssl: OpenSSL::SSL::VERIFY_NONE
+        verify_ssl: OpenSSL::SSL::VERIFY_NONE,
+        gateway_url: FRAUD_GATEWAY_URL
       }.merge(options)
 
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("https://fraud.mch.weixin.qq.com/risk/getpublickey", make_payload(params), options)))
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("/risk/getpublickey", make_payload(params), options)))
 
       yield r if block_given?
 
@@ -442,7 +444,8 @@ module WxPay
 
       def invoke_remote(url, payload, options = {})
         options = WxPay.extra_rest_client_options.merge(options)
-        url = url.start_with?("http") ? url : "#{get_gateway_url}#{url}"
+        gateway_url = options.delete(:gateway_url) || get_gateway_url
+        url = "#{gateway_url}#{url}"
 
         RestClient::Request.execute(
           {
