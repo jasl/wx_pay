@@ -3,7 +3,7 @@
 A simple Wechat pay ruby gem, without unnecessary magic or wrapper.
 copied from [alipay](https://github.com/chloerei/alipay) .
 
-Please read official document first: <https://mp.weixin.qq.com/paymch/readtemplate?t=mp/business/course3_tmpl&lang=zh_CN>.
+Please read official document first: https://pay.weixin.qq.com/wiki/doc/api/index.html.
 
 [![Build Status](https://travis-ci.org/jasl/wx_pay.svg?branch=master)](https://travis-ci.org/jasl/wx_pay)
 
@@ -60,7 +60,7 @@ Note: You should create your APIKEY (Link to [微信商户平台](https://pay.we
 
 #### unifiedorder
 
-WxPay supports both JSAPI, NATIVE and APP.
+WxPay supports MWEB, JSAPI, NATIVE and APP.
 
 ```ruby
 # required fields
@@ -70,12 +70,30 @@ params = {
   total_fee: 1,
   spbill_create_ip: '127.0.0.1',
   notify_url: 'http://making.dev/notify',
-  trade_type: 'JSAPI', # could be "JSAPI", "NATIVE" or "APP",
+  trade_type: 'JSAPI', # could be "MWEB", ""JSAPI", "NATIVE" or "APP",
   openid: 'OPENID' # required when trade_type is `JSAPI`
 }
 ```
 
 `WxPay::Service.invoke_unifiedorder params` will create an payment request and return a WxPay::Result instance(subclass of Hash) contains parsed result.
+
+If your trade type is "MWEB", the result would be like this.
+
+```ruby
+r = WxPay::Service.invoke_unifiedorder params
+# => {
+#      "return_code"=>"SUCCESS",
+#      "return_msg"=>"OK",
+#      "appid"=>"YOUR APPID",
+#      "mch_id"=>"YOUR MCH_ID",
+#      "nonce_str"=>"8RN7YfTZ3OUgWX5e",
+#      "sign"=>"623AE90C9679729DDD7407DC7A1151B2",
+#      "result_code"=>"SUCCESS",
+#      "prepay_id"=>"wx2014111104255143b7605afb0314593866",
+#      "mweb_url"=>"https://wx.tenpay.com/cgi-bin/mmpayweb-bin/checkmweb?prepay_id=wx2016121516420242444321ca0631331346&package=1405458241",
+#      "trade_type"=>"MWEB"
+#    }
+```
 
 If your trade type is "JSAPI", the result would be like this.
 
