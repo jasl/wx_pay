@@ -420,13 +420,13 @@ module WxPay
         end
       end
 
-      def xmlify_payload(params)
-        sign = WxPay::Sign.generate(params)
+      def xmlify_payload(params, sign_type = WxPay::Sign::SIGN_TYPE_MD5)
+        sign = WxPay::Sign.generate(params, sign_type)
         params.delete(:key) if params[:key]
         "<xml>#{params.map { |k, v| "<#{k}>#{v}</#{k}>" }.join}<sign>#{sign}</sign></xml>"
       end
 
-      def make_payload(params)
+      def make_payload(params, sign_type = WxPay::Sign::SIGN_TYPE_MD5)
         if WxPay.sandbox_mode?
           r = get_sandbox_signkey
           if r['return_code'] == WxPay::Result::SUCCESS_FLAG
@@ -439,7 +439,7 @@ module WxPay
             warn("WxPay Warn: fetch sandbox sign key failed #{r['return_msg']}")
           end
         end
-        xmlify_payload(params)
+        xmlify_payload(params, sign_type)
       end
 
       def invoke_remote(url, payload, options = {})
