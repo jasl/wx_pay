@@ -361,6 +361,30 @@ module WxPay
       r
     end
 
+    DOWNLOAD_FUND_FLOW_REQUIRED_FIELDS = [:bill_date, :account_type]
+    def self.download_fund_flow(params, options = {})
+      params = {
+          appid: options.delete(:appid) || WxPay.appid,
+          mch_id: options.delete(:mch_id) || WxPay.mch_id,
+          nonce_str: SecureRandom.uuid.tr('-', ''),
+          key: options.delete(:key) || WxPay.key
+      }.merge(params)
+
+      check_required_options(params, DOWNLOAD_FUND_FLOW_REQUIRED_FIELDS)
+
+      options = {
+          ssl_client_cert: options.delete(:apiclient_cert) || WxPay.apiclient_cert,
+          ssl_client_key: options.delete(:apiclient_key) || WxPay.apiclient_key,
+          verify_ssl: OpenSSL::SSL::VERIFY_NONE
+      }.merge(options)
+
+      r = invoke_remote("/pay/downloadfundflow", make_payload(params, WxPay::Sign::SIGN_TYPE_HMAC_SHA256), options)
+
+      yield r if block_given?
+
+      r
+    end
+
     def self.sendgroupredpack(params, options={})
       params = {
         wxappid: options.delete(:appid) || WxPay.appid,
@@ -420,13 +444,13 @@ module WxPay
         end
       end
 
-      def xmlify_payload(params)
-        sign = WxPay::Sign.generate(params)
+      def xmlify_payload(params, sign_type = WxPay::Sign::SIGN_TYPE_MD5)
+        sign = WxPay::Sign.generate(params, sign_type)
         params.delete(:key) if params[:key]
         "<xml>#{params.map { |k, v| "<#{k}>#{v}</#{k}>" }.join}<sign>#{sign}</sign></xml>"
       end
 
-      def make_payload(params)
+      def make_payload(params, sign_type = WxPay::Sign::SIGN_TYPE_MD5)
         if WxPay.sandbox_mode?
           r = get_sandbox_signkey
           if r['return_code'] == WxPay::Result::SUCCESS_FLAG
@@ -439,7 +463,7 @@ module WxPay
             warn("WxPay Warn: fetch sandbox sign key failed #{r['return_msg']}")
           end
         end
-        xmlify_payload(params)
+        xmlify_payload(params, sign_type)
       end
 
       def invoke_remote(url, payload, options = {})

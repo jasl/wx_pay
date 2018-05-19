@@ -14,19 +14,29 @@ class WxPay::SignTest < MiniTest::Test
       total_fee: 1
     }
 
-    @sign = '729A68AC3DE268DBD9ADE442382E7B24'
+    @sign_md5 = '729A68AC3DE268DBD9ADE442382E7B24'
+    @sign_hmac_sha256 = 'A58C01F990B45A4D0E496F835B2739E391C6C734927B1DA740DC873E607FB42A'
   end
 
   def test_generate_sign
-    assert_equal @sign, WxPay::Sign.generate(@params)
+    assert_equal @sign_md5, WxPay::Sign.generate(@params)
+  end
+
+  def test_generate_sign_md5
+    assert_equal @sign_md5, WxPay::Sign.generate(@params, WxPay::Sign::SIGN_TYPE_MD5)
+  end
+
+  def test_generate_sign_hmac_sha256
+    @params.merge!(key: "key")
+    assert_equal @sign_hmac_sha256, WxPay::Sign.generate(@params, WxPay::Sign::SIGN_TYPE_HMAC_SHA256)
   end
 
   def test_verify_sign
-    assert WxPay::Sign.verify?(@params.merge(:sign => @sign))
+    assert WxPay::Sign.verify?(@params.merge(:sign => @sign_md5))
   end
 
   def test_verify_sign_when_fails
-    assert !WxPay::Sign.verify?(@params.merge(:danger => 'danger', :sign => @sign))
+    assert !WxPay::Sign.verify?(@params.merge(:danger => 'danger', :sign => @sign_md5))
   end
 
   def test_accept_pars_key_to_generate_sign
