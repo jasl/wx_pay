@@ -152,6 +152,7 @@ module WxPay
       params = {
         appid: options.delete(:appid) || WxPay.appid,
         mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        key: options.delete(:key) || WxPay.key,
         nonce_str: SecureRandom.uuid.tr('-', '')
       }.merge(params)
 
@@ -286,6 +287,7 @@ module WxPay
       params = {
         appid: options.delete(:appid) || WxPay.appid,
         mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        key: options.delete(:key) || WxPay.key,
         nonce_str: SecureRandom.uuid.tr('-', '')
       }.merge(params)
 
@@ -309,6 +311,7 @@ module WxPay
       params = {
         appid: options.delete(:appid) || WxPay.appid,
         mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        key: options.delete(:key) || WxPay.key,
         nonce_str: SecureRandom.uuid.tr('-', '')
       }.merge(params)
 
@@ -332,6 +335,7 @@ module WxPay
       params = {
         appid: options.delete(:appid) || WxPay.appid,
         mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        key: options.delete(:key) || WxPay.key,
         nonce_str: SecureRandom.uuid.tr('-', '')
       }.merge(params)
 
@@ -349,6 +353,7 @@ module WxPay
       params = {
         appid: options.delete(:appid) || WxPay.appid,
         mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        key: options.delete(:key) || WxPay.key,
         nonce_str: SecureRandom.uuid.tr('-', ''),
       }.merge(params)
 
@@ -389,6 +394,7 @@ module WxPay
       params = {
         wxappid: options.delete(:appid) || WxPay.appid,
         mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        key: options.delete(:key) || WxPay.key,
         nonce_str: SecureRandom.uuid.tr('-', '')
       }.merge(params)
 
@@ -411,6 +417,7 @@ module WxPay
       params = {
         wxappid: options.delete(:appid) || WxPay.appid,
         mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        key: options.delete(:key) || WxPay.key,
         nonce_str: SecureRandom.uuid.tr('-', '')
       }.merge(params)
 
