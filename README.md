@@ -52,6 +52,17 @@ WxPay.appsecret = 'YOUR_SECRET'
 WxPay.extra_rest_client_options = {timeout: 2, open_timeout: 3}
 ```
 
+If you need to use sandbox mode.
+
+```ruby
+result = WxPay::Service.get_sandbox_signkey('YOUR_MCH_ID')
+WxPay.key = result['sandbox_signkey']
+WxPay.appid = 'YOUR_APPID'
+WxPay.mch_id = 'YOUR_MCH_ID'
+WxPay.debug_mode = true # default is `true`
+WxPay.sandbox_mode = true # default is `false`
+```
+
 Note: You should create your APIKEY (Link to [微信商户平台](https://pay.weixin.qq.com/index.php/home/login)) first if you haven't, and pay attention that **the length of the APIKEY should be 32**.
 
 ### APIs

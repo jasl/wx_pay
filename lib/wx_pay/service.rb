@@ -27,9 +27,9 @@ module WxPay
       ), quirks_mode: true)
     end
 
-    def self.get_sandbox_signkey
+    def self.get_sandbox_signkey(mch_id)
       params = {
-        mch_id: WxPay.mch_id,
+        mch_id: mch_id,
         nonce_str: SecureRandom.uuid.tr('-', '')
       }
       r = WxPay::Result.new(Hash.from_xml(invoke_remote("/pay/getsignkey", xmlify_payload(params))))
@@ -451,18 +451,6 @@ module WxPay
       end
 
       def make_payload(params, sign_type = WxPay::Sign::SIGN_TYPE_MD5)
-        if WxPay.sandbox_mode?
-          r = get_sandbox_signkey
-          if r['return_code'] == WxPay::Result::SUCCESS_FLAG
-            params = params.merge({
-              :mch_id => r['mch_id'] || WxPay.mch_id,
-              :key => r['sandbox_signkey']
-            })
-            WxPay.sandbox_key = r['sandbox_signkey']
-          else
-            warn("WxPay Warn: fetch sandbox sign key failed #{r['return_msg']}")
-          end
-        end
         xmlify_payload(params, sign_type)
       end
 
