@@ -11,7 +11,7 @@ module WxPay
 
   class<< self
     attr_accessor :appid, :mch_id, :key, :appsecret, :extra_rest_client_options, :debug_mode
-    attr_accessor :sandbox_mode, :sandbox_key
+    attr_accessor :sandbox_mode, :manual_get_sandbox_key
     attr_reader :apiclient_cert, :apiclient_key
 
     def set_apiclient_by_pkcs12(str, pass)
@@ -36,6 +36,10 @@ module WxPay
 
     def sandbox_mode?
       @sandbox_mode
+    end
+
+    def manual_get_sandbox_key?
+      @manual_get_sandbox_key
     end
   end
 end

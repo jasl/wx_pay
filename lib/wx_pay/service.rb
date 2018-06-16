@@ -458,14 +458,13 @@ module WxPay
 
       def make_payload(params, sign_type = WxPay::Sign::SIGN_TYPE_MD5)
         # TODO: Move this out
-        if WxPay.sandbox_mode? && !params[:key]
+        if WxPay.sandbox_mode? && !WxPay.manual_get_sandbox_key?
           r = get_sandbox_signkey
           if r['return_code'] == WxPay::Result::SUCCESS_FLAG
             params = params.merge(
               mch_id: r['mch_id'] || WxPay.mch_id,
               key: r['sandbox_signkey']
             )
-            WxPay.sandbox_key = r['sandbox_signkey']
           else
             warn("WxPay Warn: fetch sandbox sign key failed #{r['return_msg']}")
           end
