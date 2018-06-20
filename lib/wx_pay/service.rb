@@ -27,9 +27,10 @@ module WxPay
       ), quirks_mode: true)
     end
 
-    def self.get_sandbox_signkey(mch_id = WxPay.mch_id)
+    def self.get_sandbox_signkey(mch_id = WxPay.mch_id, options = {})
       params = {
         mch_id: mch_id,
+        key: options.delete(:key) || WxPay.key,
         nonce_str: SecureRandom.uuid.tr('-', '')
       }
       r = WxPay::Result.new(Hash.from_xml(invoke_remote("/pay/getsignkey", xmlify_payload(params))))
