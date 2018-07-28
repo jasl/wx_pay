@@ -17,11 +17,18 @@ module WxPay
 
     def self.authenticate(authorization_code, options = {})
       options = WxPay.extra_rest_client_options.merge(options)
-      url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=#{WxPay.appid}&secret=#{WxPay.appsecret}&code=#{authorization_code}&grant_type=authorization_code"
+      payload = {
+        appid: options.delete(:appid) || WxPay.appid,
+        secret: options.delete(:appsecret) || WxPay.appsecret,
+        code: authorization_code,
+        grant_type: 'authorization_code'
+      }
+      url = "https://api.weixin.qq.com/sns/oauth2/access_token"
 
       ::JSON.parse(RestClient::Request.execute(
         {
           method: :get,
+          payload: payload,
           url: url
         }.merge(options)
       ), quirks_mode: true)
@@ -40,11 +47,18 @@ module WxPay
 
     def self.authenticate_from_weapp(js_code, options = {})
       options = WxPay.extra_rest_client_options.merge(options)
-      url = "https://api.weixin.qq.com/sns/jscode2session?appid=#{WxPay.appid}&secret=#{WxPay.appsecret}&js_code=#{js_code}&grant_type=authorization_code"
+      payload = {
+        appid: options.delete(:appid) || WxPay.appid,
+        secret: options.delete(:appsecret) || WxPay.appsecret,
+        js_code: authorization_code,
+        grant_type: 'authorization_code'
+      }
+      url = "https://api.weixin.qq.com/sns/jscode2session"
 
       ::JSON.parse(RestClient::Request.execute(
         {
           method: :get,
+          payload: payload,
           url: url
         }.merge(options)
       ), quirks_mode: true)
