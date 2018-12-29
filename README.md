@@ -197,7 +197,7 @@ r = WxPay::Service.generate_js_pay_req params
 
 #### Notify Process
 
-A simple example of processing notify.
+A simple example of processing notify for Rails Action Controller.
 
 ```ruby
 # config/routes.rb
@@ -218,6 +218,39 @@ def notify
   end
 end
 ```
+
+A simple example of processing notify for Grape v1.2.2 .
+
+```ruby
+# Gemfile
+gem 'multi_xml'
+
+# config/routes.rb
+mount Wechat::Api => '/notify'
+
+# app/api/wechat/api.rb
+module Wechat
+  class Api < Grape::API
+    content_type :xml, 'text/xml'
+    format :xml
+    formatter :xml, lambda { |object, env| object.to_xml(root: 'xml', dasherize: false) }
+    
+    post "" do
+      result = params["xml"]
+      if WxPay::Sign.verify?(result)
+          # find your order and process the post-paid logic.
+          
+        status 200
+        {return_code: "SUCCESS"}
+      else
+        status 200
+        {return_code: "FAIL", return_msg: "签名失败"}
+      end
+    end
+  end
+end
+```
+
 
 ### Integrate with QRCode(二维码)
 
