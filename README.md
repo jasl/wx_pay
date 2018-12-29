@@ -226,16 +226,16 @@ A simple example of processing notify for Grape v1.2.2 .
 gem 'multi_xml'
 
 # config/routes.rb
-mount Wechat::Api => '/notify'
+mount WechatPay::Api => '/'
 
-# app/api/wechat/api.rb
-module Wechat
+# app/api/wechat_pay/api.rb
+module WechatPay
   class Api < Grape::API
     content_type :xml, 'text/xml'
     format :xml
     formatter :xml, lambda { |object, env| object.to_xml(root: 'xml', dasherize: false) }
     
-    post "" do
+    post "notify" do
       result = params["xml"]
       if WxPay::Sign.verify?(result)
           # find your order and process the post-paid logic.
