@@ -26,12 +26,12 @@ module WxPay
 
     def self.verify?(params, options = {})
       return true if WxPay.sandbox_mode?
+
       params = params.dup
-      params = {
-        appid: options.delete(:appid) || WxPay.appid,
-        mch_id: options.delete(:mch_id) || WxPay.mch_id,
-        key: options.delete(:key) || WxPay.key
-      }.merge(params)
+      params["appid"] = options[:appid] if options[:appid]
+      params["mch_id"] = options[:mch_id]  if options[:mch_id]
+      params["key"] = options[:key] if options[:key]
+
       sign = params.delete('sign') || params.delete(:sign)
       generate(params) == sign
     end
