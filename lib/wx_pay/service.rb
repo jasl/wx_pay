@@ -58,7 +58,7 @@ module WxPay
       ::JSON.parse(RestClient::Request.execute(
         {
           method: :get,
-          payload: payload,
+          headers: {params: payload},
           url: url
         }.merge(options)
       ), quirks_mode: true)
