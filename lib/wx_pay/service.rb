@@ -28,7 +28,7 @@ module WxPay
       ::JSON.parse(RestClient::Request.execute(
         {
           method: :get,
-          payload: payload,
+          headers: {params: payload},
           url: url
         }.merge(options)
       ), quirks_mode: true)
@@ -450,7 +450,7 @@ module WxPay
 
       r
     end
-    
+
     # 用于商户对已发放的红包进行查询红包的具体信息，可支持普通红包和裂变包。
     GETHBINFO_FIELDS = [:mch_billno, :bill_type]
     def self.gethbinfo(params, options = {})
