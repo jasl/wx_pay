@@ -50,7 +50,7 @@ module WxPay
       payload = {
         appid: options.delete(:appid) || WxPay.appid,
         secret: options.delete(:appsecret) || WxPay.appsecret,
-        js_code: authorization_code,
+        js_code: js_code,
         grant_type: 'authorization_code'
       }
       url = "https://api.weixin.qq.com/sns/jscode2session"
