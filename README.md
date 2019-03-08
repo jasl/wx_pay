@@ -180,7 +180,7 @@ r = WxPay::Service.generate_app_pay_req params
 # required fields
 params = {
   prepayid: '1101000000140415649af9fc314aa427', # fetch by call invoke_unifiedorder with `trade_type` is `JSAPI`
-  noncestr: '1101000000140429eb40476f8896f4c9', # must same as given to invoke_unifiedorder
+  noncestr: SecureRandom.hex(16), 
 }
 
 # call generate_js_pay_req
