@@ -275,7 +275,8 @@ you can pass `appid`, `mch_id`, `key`, `apiclient_cert`, `apiclient_key` as a ha
 
 For example
 ```ruby
-WxPay::Service.generate_app_pay_req params, {appid: 'APPID', mch_id: 'MCH_ID', key: 'KEY'}
+another_account = {appid: 'APPID', mch_id: 'MCH_ID', key: 'KEY'}.freeze
+WxPay::Service.generate_app_pay_req params, another_account.dup
 ```
 
 ## Contributing
