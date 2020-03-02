@@ -37,7 +37,7 @@ Create `config/initializers/wx_pay.rb` and put following configurations into it.
 # required
 WxPay.appid = 'YOUR_APPID'
 WxPay.key = 'YOUR_KEY'
-WxPay.mch_id = 'YOUR_MCH_ID'
+WxPay.mch_id = 'YOUR_MCH_ID' # required type is String, otherwise there will be cases where JS_PAY can pay but the APP cannot pay
 WxPay.debug_mode = true # default is `true`
 WxPay.sandbox_mode = false # default is `false`
 
@@ -56,7 +56,7 @@ If you need to use sandbox mode.
 
 ```ruby
 WxPay.appid = 'YOUR_APPID'
-WxPay.mch_id = 'YOUR_MCH_ID'
+WxPay.mch_id = 'YOUR_MCH_ID' # required type is String, otherwise there will be cases where JS_PAY can pay but the APP cannot pay
 WxPay.debug_mode = true # default is `true`
 WxPay.sandbox_mode = true # default is `false`
 result = WxPay::Service.get_sandbox_signkey
