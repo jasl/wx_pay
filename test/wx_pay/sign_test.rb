@@ -44,4 +44,10 @@ class WxPay::SignTest < MiniTest::Test
 
     assert_equal "1454C32E885B8D9E4A05E976D1C45B88", WxPay::Sign.generate(@params)
   end
+
+  def test_verify_sign_when_use_hmac_sha256
+    opts = { key: "key", sign_type: WxPay::Sign::SIGN_TYPE_HMAC_SHA256 }
+
+    assert WxPay::Sign.verify?(@params.merge(:sign => @sign_hmac_sha256), opts)
+  end
 end
