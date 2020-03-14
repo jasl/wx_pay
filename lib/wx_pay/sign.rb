@@ -36,7 +36,8 @@ module WxPay
       params["key"] = options[:key] if options[:key]
 
       sign = params.delete('sign') || params.delete(:sign)
-      generate(params) == sign
+
+      generate(params, options[:sign_type] || SIGN_TYPE_MD5) == sign
     end
   end
 end
