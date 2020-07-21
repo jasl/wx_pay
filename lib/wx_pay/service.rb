@@ -476,6 +476,72 @@ module WxPay
       r
     end
 
+    PROFITSHARINGADDRECEIVER = [:nonce_str, :receiver]
+
+    # 添加分账接收方
+    def self.profitsharingaddreceiver(params, options = {})
+      params = {
+        appid: options.delete(:appid) || WxPay.appid,
+        mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        nonce_str: SecureRandom.uuid.tr('-', ''),
+        key: options.delete(:key) || WxPay.key
+      }.merge(params)
+
+      check_required_options(params, PROFITSHARINGADDRECEIVER)
+
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("/pay/profitsharingaddreceiver", make_payload(params, WxPay::Sign::SIGN_TYPE_HMAC_SHA256), options)))
+
+      yield r if block_given?
+
+      r
+    end
+
+    PROFITSHARINGREMOVERECEIVER = [:nonce_str, :receiver]
+    # 删除分账接收方
+    def self.profitsharingremovereceiver(params, options = {})
+      params = {
+        appid: options.delete(:appid) || WxPay.appid,
+        mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        nonce_str: SecureRandom.uuid.tr('-', ''),
+        key: options.delete(:key) || WxPay.key
+      }.merge(params)
+
+      check_required_options(params, PROFITSHARINGADDRECEIVER)
+
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("/pay/profitsharingremovereceiver", make_payload(params, WxPay::Sign::SIGN_TYPE_HMAC_SHA256), options)))
+
+      yield r if block_given?
+
+      r
+    end
+
+    # 单次分账
+
+    PROFITSHARING = [:nonce_str, :receivers, :transaction_id, :out_order_no]
+
+    def self.profitsharing(params, options = {})
+      params = {
+        appid: options.delete(:appid) || WxPay.appid,
+        mch_id: options.delete(:mch_id) || WxPay.mch_id,
+        nonce_str: SecureRandom.uuid.tr('-', ''),
+        key: options.delete(:key) || WxPay.key
+      }.merge(params)
+
+      check_required_options(params, PROFITSHARING)
+
+      options = {
+        ssl_client_cert: options.delete(:apiclient_cert) || WxPay.apiclient_cert,
+        ssl_client_key: options.delete(:apiclient_key) || WxPay.apiclient_key,
+        verify_ssl: OpenSSL::SSL::VERIFY_NONE
+      }.merge(options)
+
+      r = WxPay::Result.new(Hash.from_xml(invoke_remote("/secapi/pay/profitsharing", make_payload(params, WxPay::Sign::SIGN_TYPE_HMAC_SHA256), options)))
+
+      yield r if block_given?
+
+      r
+    end
+
     class << self
       private
 
