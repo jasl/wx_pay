@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "rest-client", '>= 2.0.0'
   s.add_runtime_dependency "activesupport", '>= 3.2'
 
-  s.add_development_dependency "rake", '~> 11.2'
+  s.add_development_dependency "rake", '>= 12.3.3'
   s.add_development_dependency "webmock", '~> 2.3'
   s.add_development_dependency "minitest", '~> 5'
 end
