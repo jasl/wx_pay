@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
 
-  s.add_runtime_dependency "rest-client", '>= 2.0.0'
+  s.add_runtime_dependency "http", '>= 5.0.1'
   s.add_runtime_dependency "activesupport", '>= 3.2'
 
   s.add_development_dependency "rake", '>= 12.3.3'
