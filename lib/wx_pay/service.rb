@@ -1,4 +1,4 @@
-require 'rest_client'
+require 'http'
 require 'json'
 require 'cgi'
 require 'securerandom'
@@ -150,16 +150,15 @@ module WxPay
       warn("WxPay Warn: missing required option: out_trade_no or transaction_id must have one") if ([:out_trade_no, :transaction_id] & params.keys) == []
 
       options = {
-        ssl_client_cert: options.delete(:apiclient_cert) || WxPay.apiclient_cert,
-        ssl_client_key: options.delete(:apiclient_key) || WxPay.apiclient_key,
-        verify_ssl: OpenSSL::SSL::VERIFY_NONE
+        ssl_context: OpenSSL::SSL::SSLContext.new.tap do |ctx|
+          ctx.set_params(
+            cert: options.delete(:apiclient_cert) || WxPay.apiclient_cert,
+            key:  options.delete(:apiclient_key) || WxPay.apiclient_key,
+          )
+          # ctx.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        end
       }.merge(options)
-
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("/secapi/pay/refund", make_payload(params), options)))
-
-      yield r if block_given?
-
-      r
+      WxPay::Result.new(Hash.from_xml(invoke_remote('/secapi/pay/refund', make_payload(params), options)))
     end
 
     REFUND_QUERY_REQUIRED_FIELDS = [:out_trade_no]
@@ -580,18 +579,10 @@ module WxPay
       end
 
       def invoke_remote(url, payload, options = {})
-        options = WxPay.extra_rest_client_options.merge(options)
         gateway_url = options.delete(:gateway_url) || get_gateway_url
         url = "#{gateway_url}#{url}"
-
-        RestClient::Request.execute(
-          {
-            method: :post,
-            url: url,
-            payload: payload,
-            headers: { content_type: 'application/xml' }
-          }.merge(options)
-        )
+        options[:body] = payload
+        HTTP.timeout(5).headers(content_type: 'application/xml').post(url, options).to_s
       end
     end
   end
