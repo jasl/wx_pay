@@ -7,7 +7,7 @@ require 'active_support/core_ext/hash/conversions'
 module WxPay
   module Service
     GATEWAY_URL = 'https://api.mch.weixin.qq.com'.freeze
-    SANDBOX_GATEWAY_URL = 'https://api.mch.weixin.qq.com/sandboxnew'.freeze
+    SANDBOX_GATEWAY_URL = 'https://api.mch.weixin.qq.com/xdc/apiv2sandbox'.freeze
     FRAUD_GATEWAY_URL = 'https://fraud.mch.weixin.qq.com'.freeze
 
     def self.generate_authorize_url(redirect_uri, state = nil)
