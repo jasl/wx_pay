@@ -7,7 +7,6 @@ require 'active_support/core_ext/hash/conversions'
 module WxPay
   module Service
     GATEWAY_URL = 'https://api.mch.weixin.qq.com'.freeze
-    SANDBOX_GATEWAY_URL = 'https://api.mch.weixin.qq.com/xdc/apiv2sandbox'.freeze
     FRAUD_GATEWAY_URL = 'https://fraud.mch.weixin.qq.com'.freeze
 
     def self.generate_authorize_url(redirect_uri, state = nil)
@@ -32,17 +31,6 @@ module WxPay
           url: url
         }.merge(options)
       ), quirks_mode: true)
-    end
-
-    def self.get_sandbox_signkey(mch_id = WxPay.mch_id, options = {})
-      params = {
-        mch_id: mch_id,
-        key: options.delete(:key) || WxPay.key,
-        nonce_str: SecureRandom.uuid.tr('-', '')
-      }
-      r = WxPay::Result.new(Hash.from_xml(invoke_remote("/pay/getsignkey", xmlify_payload(params))))
-      yield r if block_given?
-      r
     end
 
     def self.authenticate_from_weapp(js_code, options = {})
@@ -546,12 +534,12 @@ module WxPay
       private
 
       def get_gateway_url
-        return SANDBOX_GATEWAY_URL if WxPay.sandbox_mode?
         GATEWAY_URL
       end
 
       def check_required_options(options, names)
         return unless WxPay.debug_mode?
+
         names.each do |name|
           warn("WxPay Warn: missing required option: #{name}") unless options.has_key?(name)
         end
@@ -563,19 +551,6 @@ module WxPay
       end
 
       def make_payload(params, sign_type = WxPay::Sign::SIGN_TYPE_MD5)
-        # TODO: Move this out
-        if WxPay.sandbox_mode? && !WxPay.manual_get_sandbox_key?
-          r = get_sandbox_signkey
-          if r['return_code'] == WxPay::Result::SUCCESS_FLAG
-            params = params.merge(
-              mch_id: r['mch_id'] || WxPay.mch_id,
-              key: r['sandbox_signkey']
-            )
-          else
-            warn("WxPay Warn: fetch sandbox sign key failed #{r['return_msg']}")
-          end
-        end
-
         xmlify_payload(params, sign_type)
       end
 
