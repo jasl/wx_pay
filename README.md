@@ -205,7 +205,7 @@ post "notify" => "orders#notify"
 # app/controllers/orders_controller.rb
 
 def notify
-  result = Hash.from_xml(request.body.read)["xml"]
+  result = Hash.parse_xml(request.body.read)["xml"]
 
   if WxPay::Sign.verify?(result)
 

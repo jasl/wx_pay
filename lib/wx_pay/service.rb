@@ -2,6 +2,8 @@ require 'rest_client'
 require 'json'
 require 'cgi'
 require 'securerandom'
+require 'active_support/isolated_execution_state'
+require 'active_support/xml_mini'
 require 'active_support/core_ext/hash/conversions'
 
 module WxPay
