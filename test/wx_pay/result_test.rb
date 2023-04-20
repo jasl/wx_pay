@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'active_support/core_ext/hash/conversions'
 
 class WxPay::ResultTest < MiniTest::Test
   def test_success_method_with_true

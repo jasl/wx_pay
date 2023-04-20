@@ -28,8 +28,6 @@ module WxPay
     end
 
     def self.verify?(params, options = {})
-      return true if WxPay.sandbox_mode?
-
       params = params.dup
       params["appid"] = options[:appid] if options[:appid]
       params["mch_id"] = options[:mch_id]  if options[:mch_id]
