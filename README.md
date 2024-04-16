@@ -42,7 +42,7 @@ WxPay.debug_mode = true # default is `true`
 
 # cert, see https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=4_3
 # using PCKS12
-WxPay.set_apiclient_by_pkcs12(File.read(pkcs12_filepath), pass)
+WxPay.set_apiclient_by_pkcs12(File.read(pkcs12_filepath), cert_password)
 
 # if you want to use `generate_authorize_req` and `authenticate`
 WxPay.appsecret = 'YOUR_SECRET' 
